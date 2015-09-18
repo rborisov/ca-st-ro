@@ -10,7 +10,7 @@ find_package(Threads REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(LibMPDClient REQUIRED)
 find_package(LibSoup REQUIRED)
-find_package(GTK2 REQUIRED glade)
+find_package(GTK2 REQUIRED glade gtk)
 
 #pkg_check_modules(GTK2 REQUIRED gtk+-2.0)
 

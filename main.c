@@ -11,7 +11,7 @@
 
 #define UI_FILE     "player.glade"
 #define APPNAME         "player"
-#define PREFIX  ".."
+#define PREFIX  "../assets"
 #define VERSION "0.1"
 
 #define _(String) gettext (String)
@@ -77,7 +77,8 @@ int main (int argc, char *argv[])
     GdkPixbuf *pixbuf;
     GtkStyle *style;
 
-    pixbuf = gdk_pixbuf_new_from_file ("../assets/bkbg.jpg",&error);
+    path = g_strdup_printf ("%s/bkbg.jpg", PREFIX);
+    pixbuf = gdk_pixbuf_new_from_file (path,&error);
     if (error != NULL) {
         if (error->domain == GDK_PIXBUF_ERROR) {
             g_print ("Pixbuf Related Error:\n");
