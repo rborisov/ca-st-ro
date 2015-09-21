@@ -9,9 +9,9 @@
 #include <stdbool.h>
 #include <libintl.h>
 
-#define UI_FILE     "player.glade"
-#define APPNAME         "player"
-#define PREFIX  "../assets"
+#define UI_FILE "player.glade"
+#define APPNAME "player"
+#define PREFIX "../assets"
 #define VERSION "0.1"
 
 #define _(String) gettext (String)
@@ -21,11 +21,14 @@ GtkBuilder  *xml = NULL;
 
 int main (int argc, char *argv[])
 {
-    gchar       *path;
- /*   char        *lang;
-    int     opt;
-    int     longopt_index;
-    
+    gchar *path;
+    char *lang;
+    int opt;
+    int longopt_index;
+    GdkColor color;
+    gdk_color_parse("black", &color);
+
+    setlocale (LC_ALL, lang);
     static struct option long_options[] = {
         {"help", 0, NULL, 'h'},
         {"version", 0, NULL, 'v'},
@@ -50,7 +53,7 @@ int main (int argc, char *argv[])
                 return 1;
         }
     }
-*/
+
     gdk_threads_init ();
 
     gtk_init (&argc, &argv);
@@ -68,8 +71,42 @@ int main (int argc, char *argv[])
     gtk_builder_connect_signals (xml, NULL);
 
     main_window = GTK_WIDGET (gtk_builder_get_object (xml, "window1"));
-
+    gtk_widget_modify_bg(GTK_WIDGET(main_window), GTK_STATE_NORMAL, &color);
     gtk_widget_show (main_window);
+
+    /*
+     * button color
+     */
+    GtkWidget *button;
+    button = GTK_WIDGET (gtk_builder_get_object (xml, "button1"));
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_NORMAL, &color);
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_PRELIGHT, &color);
+    button = GTK_WIDGET (gtk_builder_get_object (xml, "button2"));
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_NORMAL, &color);
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_PRELIGHT, &color);
+    button = GTK_WIDGET (gtk_builder_get_object (xml, "button3"));
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_NORMAL, &color);
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_PRELIGHT, &color);
+    button = GTK_WIDGET (gtk_builder_get_object (xml, "button4"));
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_NORMAL, &color);
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_PRELIGHT, &color);
+    button = GTK_WIDGET (gtk_builder_get_object (xml, "button5"));
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_NORMAL, &color);
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_PRELIGHT, &color);
+    button = GTK_WIDGET (gtk_builder_get_object (xml, "button6"));
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_NORMAL, &color);
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_PRELIGHT, &color);
+    button = GTK_WIDGET (gtk_builder_get_object (xml, "button7"));
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_NORMAL, &color);
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_PRELIGHT, &color);
+    button = GTK_WIDGET (gtk_builder_get_object (xml, "button8"));
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_NORMAL, &color);
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_PRELIGHT, &color);
+    button = GTK_WIDGET (gtk_builder_get_object (xml, "button9"));
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_NORMAL, &color);
+    gtk_widget_modify_bg(GTK_WIDGET(button), GTK_STATE_PRELIGHT, &color);
+
+
 /*
  * background
  * */
@@ -88,12 +125,12 @@ int main (int argc, char *argv[])
         }
 
         g_printerr ("%s\n", error[0].message);
-        goto cleanup;
+    } else {
+        gdk_pixbuf_render_pixmap_and_mask (pixbuf, &background, NULL, 0);
+        style = gtk_style_new ();
+        style->bg_pixmap[0] = background;
+        gtk_widget_set_style (GTK_WIDGET(main_window), GTK_STYLE(style));
     }
-    gdk_pixbuf_render_pixmap_and_mask (pixbuf, &background, NULL, 0);
-    style = gtk_style_new ();
-    style->bg_pixmap[0] = background;
-    gtk_widget_set_style (GTK_WIDGET(main_window), GTK_STYLE(style));
 /*
  * - background
  */

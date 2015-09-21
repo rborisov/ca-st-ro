@@ -9,15 +9,12 @@ set(CPACK_PACKAGE_VERSION_PATCH "2")
 find_package(Threads REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(LibMPDClient REQUIRED)
-find_package(LibSoup REQUIRED)
 find_package(GTK2 REQUIRED glade gtk)
 
-#pkg_check_modules(GTK2 REQUIRED gtk+-2.0)
-
 include_directories(${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR} 
-    ${GTK2_INCLUDE_DIRS} ${GTK2_GLADE_INCLUDE_DIR})
+    ${GTK2_INCLUDE_DIRS} ${GTK2_GLADE_INCLUDE_DIR} ${LIBMPDCLIENT_INCLUDE_DIR})
 
-link_directories(${GTK2_LIBRARY_DIRS})
+link_directories(${GTK2_LIBRARY_DIRS} ${LIBMPDCLIENT_LIBRARY_DIRS})
 
 include(CheckCSourceCompiles)
 
@@ -28,10 +25,12 @@ get_target_property(MKDATA_EXE mkdata LOCATION)
 
 set(SOURCES
     main.c
+    mpd_utils.c
+    gtk_utils.c
 )
 
 add_executable(player ${SOURCES})
 target_link_libraries(player ${CMAKE_THREAD_LIBS_INIT} ${GTK2_LIBRARIES} 
-    ${GTK2_GLADE_LIBRARY})
+    ${GTK2_GLADE_LIBRARY} ${LIBMPDCLIENT_LIBRARIES})
 
 install(TARGETS player DESTINATION bin)
