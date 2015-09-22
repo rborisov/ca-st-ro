@@ -16,10 +16,19 @@ struct t_mpd {
     enum mpd_conn_states conn_state;
 
     int song_pos;
+    int next_song_pos;
     int song_id;
     unsigned queue_version;
-
+    unsigned queue_len;
     int volume;
+    enum mpd_state state;
+    bool repeat;
+    bool single;
+    bool consume;
+    bool random;
+    unsigned elapsed_time;
+    unsigned total_time;
+
 } mpd;
 
 void mpd_poll();

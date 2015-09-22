@@ -19,6 +19,22 @@
 GtkWidget    *main_window;
 GtkBuilder  *xml = NULL;
 
+static void mpd_idle(gpointer data)
+{
+	mpd_poll();
+	printf("-");
+}
+
+static void player_idle(gpointer data)
+{
+	printf("+");
+}
+
+static void streamripper_idle(gpointer data)
+{
+	printf("*");
+}
+
 int main (int argc, char *argv[])
 {
     gchar *path;
@@ -134,7 +150,9 @@ int main (int argc, char *argv[])
 /*
  * - background
  */
-
+	gtk_idle_add(player_idle, NULL);
+	gtk_idle_add(mpd_idle, NULL);
+	gtk_idle_add(streamripper_idle, NULL);
     gdk_threads_enter ();
     gtk_main ();
     gdk_threads_leave ();

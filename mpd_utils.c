@@ -236,6 +236,37 @@ int mpd_delete_current_song(struct mpd_connection *conn)
 }
 #endif
 
+void mpd_put_state(void)
+{
+    struct mpd_status *status;
+    int len;
+    unsigned queue_len;
+    int song_pos, next_song_pos;
+
+    status = mpd_run_status(mpd.conn);
+    
+    if (!status) {
+        syslog(LOG_ERR, "%s mpd_run_status: %s\n", __func__, mpd_connection_get_error_message(mpd.conn));
+        mpd.conn_state = MPD_FAILURE;
+        return;
+    }
+
+    mpd.song_pos = mpd_status_get_song_pos(status);
+    mpd.next_song_pos = song_pos+1; //TODO: mpd_status_get_next_song_pos(status);
+    mpd.queue_len = mpd_status_get_queue_length(status);
+    mpd.volume = mpd_status_get_volume(status);
+    mpd.state = mpd_status_get_state(status);
+    mpd.repeat = mpd_status_get_repeat(status);
+    mpd.single = mpd_status_get_single(status);
+    mpd.consume = mpd_status_get_consume(status);
+    mpd.random = mpd_status_get_random(status);
+    mpd.elapsed_time = mpd_status_get_elapsed_time(status);
+    mpd.total_time = mpd_status_get_total_time(status);
+    mpd.song_id = mpd_status_get_song_id(status);
+
+    mpd_status_free(status);
+}
+
 void mpd_poll()
 {
     switch (mpd.conn_state) {
