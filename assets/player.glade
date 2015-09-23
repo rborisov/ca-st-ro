@@ -16,7 +16,7 @@
               <object class="GtkImage" id="image2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-media-pause</property>
+                <property name="icon_name">media-playback-pause</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -40,7 +40,7 @@
               <object class="GtkImage" id="image12">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-no</property>
+                <property name="icon_name">audio-volume-muted</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -64,7 +64,7 @@
               <object class="GtkImage" id="image13">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
+                <property name="icon_name">media-playlist-shuffle</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -76,7 +76,7 @@
               <object class="GtkImage" id="image14">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
+                <property name="icon_name">media-playlist-repeat</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -88,7 +88,7 @@
               <object class="GtkImage" id="image15">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-disconnect</property>
+                <property name="icon_name">network-receive</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -112,7 +112,7 @@
               <object class="GtkImage" id="image16">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-ok</property>
+                <property name="icon_name">dialog-error</property>
               </object>
               <packing>
                 <property name="expand">True</property>
