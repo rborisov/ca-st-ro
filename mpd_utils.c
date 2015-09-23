@@ -6,9 +6,9 @@
 
 #include "mpd_utils.h"
 
-int mpd_crop(struct mpd_connection *conn)
+int mpd_crop()
 {
-    struct mpd_status *status = mpd_run_status(conn);
+    struct mpd_status *status = mpd_run_status(mpd.conn);
     if (status == 0)
         return 0;
     int length = mpd_status_get_queue_length(status) - 1;
@@ -18,18 +18,18 @@ int mpd_crop(struct mpd_connection *conn)
         syslog(LOG_INFO, "%s: A playlist longer than 1 song in length is required to crop.\n", __func__);
     } else if (mpd_status_get_state(status) == MPD_STATE_PLAY ||
             mpd_status_get_state(status) == MPD_STATE_PAUSE) {
-        if (!mpd_command_list_begin(conn, false)) {
+        if (!mpd_command_list_begin(mpd.conn, false)) {
             syslog(LOG_ERR, "%s: mpd_command_list_begin failed\n", __func__);
             return 0;
         }
 
         for (; length >= 0; --length)
             if (length != mpd_status_get_song_pos(status))
-                mpd_send_delete(conn, length);
+                mpd_send_delete(mpd.conn, length);
 
         mpd_status_free(status);
 
-        if (!mpd_command_list_end(conn) || !mpd_response_finish(conn)) {
+        if (!mpd_command_list_end(mpd.conn) || !mpd_response_finish(mpd.conn)) {
             syslog(LOG_ERR, "%s: mpd_command_list_end || mpd_response_finish failed\n", __func__);
             return 0;
         }
@@ -43,24 +43,24 @@ int mpd_crop(struct mpd_connection *conn)
     return 1;
 }
 
-int mpd_list_artists(struct mpd_connection *conn)
+int mpd_list_artists()
 {
     int num = 0;
 
-    mpd_search_db_tags(conn, MPD_TAG_ARTIST);
-    if (!mpd_search_commit(conn)) {
+    mpd_search_db_tags(mpd.conn, MPD_TAG_ARTIST);
+    if (!mpd_search_commit(mpd.conn)) {
         syslog(LOG_DEBUG, "%s: search_commit error\n", __func__);
         return 0;
     }
 
     struct mpd_pair *pair;
-    while ((pair = mpd_recv_pair_tag(conn, MPD_TAG_ARTIST)) != NULL) {
+    while ((pair = mpd_recv_pair_tag(mpd.conn, MPD_TAG_ARTIST)) != NULL) {
         syslog(LOG_DEBUG, "%s: %s\n", __func__, pair->value);
-        mpd_return_pair(conn, pair);
+        mpd_return_pair(mpd.conn, pair);
         num++;
     }
 
-    if (!mpd_response_finish(conn)) {
+    if (!mpd_response_finish(mpd.conn)) {
         syslog(LOG_DEBUG, "%s: error\n", __func__);
         return 0;
     }
@@ -91,9 +91,9 @@ char* mpd_get_title(struct mpd_song const *song)
     return str;
 }
 
-unsigned mpd_get_queue_length(struct mpd_connection *conn)
+unsigned mpd_get_queue_length()
 {
-    struct mpd_status *status = mpd_run_status(conn);
+    struct mpd_status *status = mpd_run_status(mpd.conn);
     if (status == NULL)
         return 0;
     const unsigned length = mpd_status_get_queue_length(status);
@@ -101,26 +101,26 @@ unsigned mpd_get_queue_length(struct mpd_connection *conn)
     return length;
 }
 
-int mpd_insert ( struct mpd_connection *conn, char *song_path )
+int mpd_insert (char *song_path )
 {
-    struct mpd_status *status = mpd_run_status(conn);
+    struct mpd_status *status = mpd_run_status(mpd.conn);
     if (status == NULL)
         return 0;
     const unsigned from = mpd_status_get_queue_length(status);
     const int cur_pos = mpd_status_get_song_pos(status);
     mpd_status_free(status);
 
-    if (mpd_run_add(conn, song_path) != true)
+    if (mpd_run_add(mpd.conn, song_path) != true)
         return 0;
 
     /* check the new queue length to find out how many songs were
      *        appended  */
-    const unsigned end = mpd_get_queue_length(conn);
+    const unsigned end = mpd_get_queue_length();
     if (end == from)
         return 0;
 
     /* move those songs to right after the current one */
-    return mpd_run_move_range(conn, from, end, cur_pos + 1);
+    return mpd_run_move_range(mpd.conn, from, end, cur_pos + 1);
 }
 #if 0
 void get_random_song(struct mpd_connection *conn, char *str, char *path)
