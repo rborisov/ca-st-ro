@@ -160,10 +160,10 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkAccelLabel" id="accellabel1">
+                  <object class="GtkAccelLabel" id="lbl_track">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Album</property>
+                    <property name="label" translatable="yes">track</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                       <attribute name="foreground" value="#ea8db6ed230a"/>
@@ -179,10 +179,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkAccelLabel" id="accellabel2">
+                  <object class="GtkAccelLabel" id="lbl_artist">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Album</property>
+                    <property name="label" translatable="yes">artist</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                       <attribute name="foreground" value="#9d40ea8d230a"/>
@@ -198,10 +198,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkAccelLabel" id="accellabel3">
+                  <object class="GtkAccelLabel" id="lbl_album">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Album</property>
+                    <property name="label" translatable="yes">album</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                       <attribute name="foreground" value="#e5eeea8d230a"/>
@@ -239,7 +239,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkButton" id="button6">
+                  <object class="GtkButton" id="btn_like">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -270,7 +270,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button7">
+                  <object class="GtkButton" id="btn_radio">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -301,7 +301,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button8">
+                  <object class="GtkButton" id="btn_crop">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -332,7 +332,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button9">
+                  <object class="GtkButton" id="btn_dislike">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -363,7 +363,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkButton" id="button1">
+                  <object class="GtkButton" id="btn_prev">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -384,7 +384,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button2">
+                  <object class="GtkButton" id="btn_play">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -404,7 +404,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button3">
+                  <object class="GtkButton" id="btn_next">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -435,7 +435,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button4">
+                  <object class="GtkButton" id="btn_vol_inc">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -455,7 +455,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button5">
+                  <object class="GtkButton" id="btn_vol_dec">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>

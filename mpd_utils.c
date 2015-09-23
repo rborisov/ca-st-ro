@@ -298,6 +298,7 @@ void mpd_poll()
             mpd.conn_state = MPD_DISCONNECTED;
             break;
         case MPD_CONNECTED:
+            mpd_put_state();
             //TODO: display status
 /*            if (queue_is_empty) {
                 queue_is_empty = 0;
