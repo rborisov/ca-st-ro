@@ -192,6 +192,10 @@ cleanup:
 void gtk_poll(void)
 {
     GtkWidget *label = NULL;
+    char *title = mpd_get_current_title();
+    //if (title)
+    //    printf("%s\n", title);
     label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_track"));
-    gtk_label_set (GTK_LABEL (label), "track1");
+    if (title)
+        gtk_label_set (GTK_LABEL (label), title);
 }

@@ -42,7 +42,12 @@ char* mpd_get_title(struct mpd_song const *song);
 int mpd_list_artists();
 char* mpd_get_artist(struct mpd_song const *song);
 void get_song_to_delete(char *str);
+char* mpd_get_album(struct mpd_song const *song);
 
 int mpd_delete_current_song();
+
+char *mpd_get_current_title(void);
+char *mpd_get_current_artist(void);
+char *mpd_get_current_album(void);
 
 #endif

@@ -16,7 +16,7 @@
               <object class="GtkImage" id="image2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="icon_name">media-playback-pause</property>
+                <property name="pixbuf">media-playback-pause.png</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -40,7 +40,7 @@
               <object class="GtkImage" id="image12">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="icon_name">audio-volume-muted</property>
+                <property name="pixbuf">audio-volume-muted-blocked-panel.png</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -64,7 +64,7 @@
               <object class="GtkImage" id="image13">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="icon_name">media-playlist-shuffle</property>
+                <property name="pixbuf">notification-network-wireless-disconnected.png</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -76,7 +76,7 @@
               <object class="GtkImage" id="image14">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="icon_name">media-playlist-repeat</property>
+                <property name="pixbuf">nm-no-connection.png</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -88,7 +88,7 @@
               <object class="GtkImage" id="image15">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="icon_name">network-receive</property>
+                <property name="pixbuf">deb.png</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -112,7 +112,7 @@
               <object class="GtkImage" id="image16">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="icon_name">dialog-error</property>
+                <property name="pixbuf">dialog-question.png</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -248,7 +248,7 @@
                       <object class="GtkImage" id="image8">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-about</property>
+                        <property name="pixbuf">bookmark-missing.svg</property>
                       </object>
                     </child>
                   </object>
@@ -279,7 +279,7 @@
                       <object class="GtkImage" id="image9">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-connect</property>
+                        <property name="pixbuf">nm-adhoc.png</property>
                       </object>
                     </child>
                   </object>
@@ -310,7 +310,7 @@
                       <object class="GtkImage" id="image10">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-clear</property>
+                        <property name="pixbuf">view-refresh.png</property>
                       </object>
                     </child>
                   </object>
@@ -341,7 +341,7 @@
                       <object class="GtkImage" id="image11">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-dialog-error</property>
+                        <property name="pixbuf">text-x-install.png</property>
                       </object>
                     </child>
                   </object>
@@ -373,7 +373,7 @@
                       <object class="GtkImage" id="image3">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-media-previous</property>
+                        <property name="pixbuf">media-skip-backward.png</property>
                       </object>
                     </child>
                   </object>
@@ -393,7 +393,7 @@
                       <object class="GtkImage" id="image4">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-media-play</property>
+                        <property name="pixbuf">media-playback-start.png</property>
                       </object>
                     </child>
                   </object>
@@ -413,7 +413,7 @@
                       <object class="GtkImage" id="image5">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-media-next</property>
+                        <property name="pixbuf">media-skip-forward.png</property>
                       </object>
                     </child>
                   </object>
@@ -444,7 +444,7 @@
                       <object class="GtkImage" id="image6">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-add</property>
+                        <property name="pixbuf">audio-volume-high.png</property>
                       </object>
                     </child>
                   </object>
@@ -464,7 +464,7 @@
                       <object class="GtkImage" id="image7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-remove</property>
+                        <property name="pixbuf">audio-volume-low.png</property>
                       </object>
                     </child>
                   </object>

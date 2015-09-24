@@ -69,12 +69,70 @@ int mpd_list_artists()
     return num;
 }
 
+char* mpd_get_current_title()
+{
+    char *str = NULL;
+    struct mpd_song *song;
+
+    if (mpd.conn_state == MPD_CONNECTED) {
+        song = mpd_run_current_song(mpd.conn);
+        if(song == NULL)
+            return NULL;
+        str = mpd_get_title(song);
+        mpd_song_free(song);
+    }
+
+    return str;
+}
+
+char* mpd_get_current_artist()
+{   
+    char *str = NULL;
+    struct mpd_song *song;
+
+    if (mpd.conn_state == MPD_CONNECTED) {
+        song = mpd_run_current_song(mpd.conn);
+        if(song == NULL)
+            return NULL;
+        str = mpd_get_artist(song);
+        mpd_song_free(song);
+    }
+
+    return str;
+}
+
+char* mpd_get_current_album()
+{
+    char *str = NULL;
+    struct mpd_song *song;
+    
+    if (mpd.conn_state == MPD_CONNECTED) {
+        song = mpd_run_current_song(mpd.conn);
+        if(song == NULL)
+            return NULL;
+        str = mpd_get_album(song);
+        mpd_song_free(song);
+    }
+
+    return str;
+}
+
 char* mpd_get_artist(struct mpd_song const *song)
 {
     char *str;
     str = (char *)mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
     if(str == NULL)
         str = basename((char *)mpd_song_get_uri(song));
+
+    return str;
+}
+
+char* mpd_get_album(struct mpd_song const *song)
+{
+    char *str;
+    str = (char *)mpd_song_get_tag(song, MPD_TAG_ALBUM, 0);
+    /*if(str == NULL)
+        str = basename((char *)mpd_song_get_uri(song));*/
 
     return str;
 }
