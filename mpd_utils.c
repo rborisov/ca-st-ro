@@ -6,6 +6,10 @@
 
 #include "mpd_utils.h"
 
+char titlebuf[128] = "";
+char artistbuf[128] = "";
+char albumbuf[128] = "";
+
 int mpd_crop()
 {
     struct mpd_status *status = mpd_run_status(mpd.conn);
@@ -71,50 +75,47 @@ int mpd_list_artists()
 
 char* mpd_get_current_title()
 {
-    char *str = NULL;
     struct mpd_song *song;
 
     if (mpd.conn_state == MPD_CONNECTED) {
         song = mpd_run_current_song(mpd.conn);
         if(song == NULL)
             return NULL;
-        str = mpd_get_title(song);
+        sprintf(titlebuf, "%s", mpd_get_title(song));
         mpd_song_free(song);
     }
-
-    return str;
+    printf("%s\n", titlebuf);
+    return titlebuf;
 }
 
 char* mpd_get_current_artist()
 {   
-    char *str = NULL;
     struct mpd_song *song;
 
     if (mpd.conn_state == MPD_CONNECTED) {
         song = mpd_run_current_song(mpd.conn);
         if(song == NULL)
             return NULL;
-        str = mpd_get_artist(song);
+        sprintf(artistbuf, "%s", mpd_get_artist(song));
         mpd_song_free(song);
     }
 
-    return str;
+    return artistbuf;
 }
 
 char* mpd_get_current_album()
 {
-    char *str = NULL;
     struct mpd_song *song;
     
     if (mpd.conn_state == MPD_CONNECTED) {
         song = mpd_run_current_song(mpd.conn);
         if(song == NULL)
             return NULL;
-        str = mpd_get_album(song);
+        sprintf(albumbuf, "%s", mpd_get_album(song));
         mpd_song_free(song);
     }
 
-    return str;
+    return albumbuf;
 }
 
 char* mpd_get_artist(struct mpd_song const *song)
@@ -293,6 +294,20 @@ int mpd_delete_current_song(struct mpd_connection *conn)
     return 1;
 }
 #endif
+void mpd_toggle_play(void)
+{
+    mpd_run_toggle_pause(mpd.conn);
+}
+
+void mpd_next(void)
+{
+    mpd_run_next(mpd.conn);
+}
+
+void mpd_prev(void)
+{
+    mpd_run_previous(mpd.conn);
+}
 
 void mpd_put_state(void)
 {
@@ -321,6 +336,7 @@ void mpd_put_state(void)
     mpd.elapsed_time = mpd_status_get_elapsed_time(status);
     mpd.total_time = mpd_status_get_total_time(status);
     mpd.song_id = mpd_status_get_song_id(status);
+    printf("%d\n", mpd.song_id);
 
     mpd_status_free(status);
 }

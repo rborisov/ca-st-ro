@@ -15,19 +15,20 @@
 static void mpd_idle(gpointer data)
 {
 	mpd_poll();
+    gtk_poll();
 //	printf("-");
 }
 
-static void player_idle(gpointer data)
-{
-    gtk_poll();
+//static void player_idle(gpointer data)
+//{
+//    gtk_poll();
 //	printf("+");
-}
+//}
 
-static void streamripper_idle(gpointer data)
-{
+//static void streamripper_idle(gpointer data)
+//{
 //	printf("*");
-}
+//}
 
 int main (int argc, char *argv[])
 {
@@ -65,10 +66,10 @@ int main (int argc, char *argv[])
 
     gtk_init (&argc, &argv);
     gtk_app_init();
-    gtk_widget_show (main_window);
-	gtk_idle_add(player_idle, NULL);
+    gtk_widget_show (gtk.main_window);
+//	gtk_idle_add(player_idle, NULL);
 	gtk_idle_add(mpd_idle, NULL);
-	gtk_idle_add(streamripper_idle, NULL);
+//	gtk_idle_add(streamripper_idle, NULL);
     gdk_threads_enter ();
     gtk_main ();
     gdk_threads_leave ();

@@ -10,7 +10,10 @@
 
 #define _(String) gettext (String)
 
-GtkWidget    *main_window;
+struct t_gtk {
+    GtkWidget    *main_window;
+    int song_id;
+} gtk;
 
 void gtk_poll(void);
 void gtk_app_init(void);

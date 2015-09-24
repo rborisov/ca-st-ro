@@ -44,6 +44,10 @@ char* mpd_get_artist(struct mpd_song const *song);
 void get_song_to_delete(char *str);
 char* mpd_get_album(struct mpd_song const *song);
 
+void mpd_toggle_play(void);
+void mpd_next(void);
+void mpd_prev(void);
+
 int mpd_delete_current_song();
 
 char *mpd_get_current_title(void);

@@ -6,13 +6,13 @@
 #include "gtk_utils.h"
 #include "mpd_utils.h"
 
-//GtkWidget *main_window;
 GtkBuilder  *xml = NULL;
 
 static void cb_prev_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
         G_GNUC_UNUSED gpointer   data)
 {
     printf("%s\n", __func__);
+    mpd_prev();
     return;
 }
 
@@ -20,6 +20,7 @@ static void cb_next_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
         G_GNUC_UNUSED gpointer  data)
 {
     printf("%s\n", __func__);
+    mpd_next();
     return;
 }
 
@@ -27,6 +28,7 @@ static void cb_play_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
         G_GNUC_UNUSED gpointer   data)
 {
     printf("%s\n", __func__);
+    mpd_toggle_play();
     return;
 }
 
@@ -94,7 +96,6 @@ static gboolean cb_key_press (G_GNUC_UNUSED GtkWidget *widget,
 
 void gtk_win_bg(char* file)
 {
-//    GtkWidget *main_window;
     GdkPixmap *background;
     GdkPixbuf *pixbuf;
     GtkStyle *style;
@@ -116,7 +117,7 @@ void gtk_win_bg(char* file)
         gdk_pixbuf_render_pixmap_and_mask (pixbuf, &background, NULL, 0);
         style = gtk_style_new ();
         style->bg_pixmap[0] = background;
-        gtk_widget_set_style (GTK_WIDGET(main_window), GTK_STYLE(style));
+        gtk_widget_set_style (GTK_WIDGET(gtk.main_window), GTK_STYLE(style));
     }
 }
 
@@ -141,10 +142,10 @@ void gtk_app_init(void)
 
     gtk_builder_connect_signals (xml, NULL);
 
-    main_window = GTK_WIDGET (gtk_builder_get_object (xml, "window1"));
-    gtk_widget_modify_bg(GTK_WIDGET(main_window), GTK_STATE_NORMAL, &color);
+    gtk.main_window = GTK_WIDGET (gtk_builder_get_object (xml, "window1"));
+    gtk_widget_modify_bg(GTK_WIDGET(gtk.main_window), GTK_STATE_NORMAL, &color);
     
-    g_signal_connect (G_OBJECT(main_window), "key-press-event", G_CALLBACK(cb_key_press), NULL);
+    g_signal_connect (G_OBJECT(gtk.main_window), "key-press-event", G_CALLBACK(cb_key_press), NULL);
 
     GtkWidget *button;
     button = GTK_WIDGET (gtk_builder_get_object (xml, "btn_prev"));
@@ -185,17 +186,35 @@ void gtk_app_init(void)
     g_signal_connect(button, "clicked", G_CALLBACK(cb_dislike_button_clicked), NULL);
 
     gtk_win_bg(NULL);
+
+    gtk.song_id = -555; //magic number to show song at beginning
 cleanup:
     return;
 }
 
 void gtk_poll(void)
 {
-    GtkWidget *label = NULL;
-    char *title = mpd_get_current_title();
-    //if (title)
-    //    printf("%s\n", title);
-    label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_track"));
-    if (title)
-        gtk_label_set (GTK_LABEL (label), title);
+    GtkWidget *label = NULL, *label1 = NULL, *label2 = NULL;
+    char *title = NULL, *artist = NULL, *album = NULL;
+    if (mpd.song_id != gtk.song_id) {
+        title = mpd_get_current_title();
+        printf("%s %d %d\n", title, mpd.song_id, gtk.song_id);
+        label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_track"));
+        if (title) {
+            gtk_label_set (GTK_LABEL (label), title);
+        }
+/*        artist = mpd_get_current_artist();
+        printf("%s\n", artist);
+        label1 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_artist"));
+        if (artist) {
+            gtk_label_set (GTK_LABEL (label1), artist);
+        }
+        album = mpd_get_current_album();
+        printf("%s\n", album);
+        label2 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_album"));
+        if (album) {
+            gtk_label_set (GTK_LABEL (label2), album);
+        }*/
+        gtk.song_id = mpd.song_id;
+    }
 }
