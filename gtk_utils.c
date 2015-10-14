@@ -194,27 +194,39 @@ cleanup:
 
 void gtk_poll(void)
 {
-    GtkWidget *label = NULL, *label1 = NULL, *label2 = NULL;
+    GtkWidget *label = NULL, *label1 = NULL, *label2 = NULL, *label3 = NULL;
     char *title = NULL, *artist = NULL, *album = NULL;
+    char time[11] = "00:00/00:00";
+    int minutes_elapsed, minutes_total;
+    
     if (mpd.song_id != gtk.song_id) {
         title = mpd_get_current_title();
-        printf("%s %d %d\n", title, mpd.song_id, gtk.song_id);
         label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_track"));
         if (title) {
+            printf("%s %d %d\n", title, mpd.song_id, gtk.song_id);
             gtk_label_set (GTK_LABEL (label), title);
         }
-/*        artist = mpd_get_current_artist();
-        printf("%s\n", artist);
+        artist = mpd_get_current_artist();
         label1 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_artist"));
         if (artist) {
+            printf("%s\n", artist);
             gtk_label_set (GTK_LABEL (label1), artist);
         }
         album = mpd_get_current_album();
-        printf("%s\n", album);
+        if (album)
         label2 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_album"));
         if (album) {
+            printf("%s\n", album);
             gtk_label_set (GTK_LABEL (label2), album);
-        }*/
+        }
         gtk.song_id = mpd.song_id;
     }
+
+    minutes_elapsed = mpd.elapsed_time/60;
+    minutes_total = mpd.total_time/60;
+
+    sprintf(time, "%02d:%02d/%02d:%02d", minutes_elapsed, mpd.elapsed_time - minutes_elapsed*60,
+            minutes_total, mpd.total_time - minutes_total*60);
+    label3 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_time"));
+    gtk_label_set (GTK_LABEL (label3), time);
 }

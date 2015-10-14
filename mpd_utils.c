@@ -6,6 +6,7 @@
 
 #include "mpd_utils.h"
 
+char nullstr[1] = "";
 char titlebuf[128] = "";
 char artistbuf[128] = "";
 char albumbuf[128] = "";
@@ -79,12 +80,14 @@ char* mpd_get_current_title()
 
     if (mpd.conn_state == MPD_CONNECTED) {
         song = mpd_run_current_song(mpd.conn);
-        if(song == NULL)
+        if(song == NULL) {
+            printf("song == NULL\n");
             return NULL;
+        }
         sprintf(titlebuf, "%s", mpd_get_title(song));
         mpd_song_free(song);
     }
-    printf("%s\n", titlebuf);
+    
     return titlebuf;
 }
 
@@ -94,8 +97,10 @@ char* mpd_get_current_artist()
 
     if (mpd.conn_state == MPD_CONNECTED) {
         song = mpd_run_current_song(mpd.conn);
-        if(song == NULL)
+        if(song == NULL) {
+            printf("song == NULL\n");
             return NULL;
+        }
         sprintf(artistbuf, "%s", mpd_get_artist(song));
         mpd_song_free(song);
     }
@@ -109,8 +114,10 @@ char* mpd_get_current_album()
     
     if (mpd.conn_state == MPD_CONNECTED) {
         song = mpd_run_current_song(mpd.conn);
-        if(song == NULL)
+        if(song == NULL) {
+            printf("song == NULL\n");
             return NULL;
+        }
         sprintf(albumbuf, "%s", mpd_get_album(song));
         mpd_song_free(song);
     }
@@ -122,8 +129,11 @@ char* mpd_get_artist(struct mpd_song const *song)
 {
     char *str;
     str = (char *)mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
-    if(str == NULL)
+    if(str == NULL) {
         str = basename((char *)mpd_song_get_uri(song));
+        if  (str == NULL)
+            str = nullstr;
+    }
 
     return str;
 }
@@ -132,8 +142,8 @@ char* mpd_get_album(struct mpd_song const *song)
 {
     char *str;
     str = (char *)mpd_song_get_tag(song, MPD_TAG_ALBUM, 0);
-    /*if(str == NULL)
-        str = basename((char *)mpd_song_get_uri(song));*/
+    if(str == NULL)
+        str = nullstr; //TODO: get album from db
 
     return str;
 }
@@ -145,6 +155,8 @@ char* mpd_get_title(struct mpd_song const *song)
     str = (char *)mpd_song_get_tag(song, MPD_TAG_TITLE, 0);
     if(str == NULL){
         str = basename((char *)mpd_song_get_uri(song));
+        if (str == NULL)
+            str = nullstr;
     }
 
     return str;
@@ -336,13 +348,14 @@ void mpd_put_state(void)
     mpd.elapsed_time = mpd_status_get_elapsed_time(status);
     mpd.total_time = mpd_status_get_total_time(status);
     mpd.song_id = mpd_status_get_song_id(status);
-    printf("%d\n", mpd.song_id);
+//    printf("%d\n", mpd.song_id);
 
     mpd_status_free(status);
 }
 
 void mpd_poll()
 {
+//    printf("%d\n", mpd.conn_state);
     switch (mpd.conn_state) {
         case MPD_DISCONNECTED:
             syslog(LOG_INFO, "%s - MPD Connecting...\n", __func__);

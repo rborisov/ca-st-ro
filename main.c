@@ -12,18 +12,17 @@
 #include "mpd_utils.h"
 #include "gtk_utils.h"
 
-static void mpd_idle(gpointer data)
+void mpd_idle(gpointer data)
 {
-	mpd_poll();
-    gtk_poll();
-//	printf("-");
+    mpd_poll();
+    g_main_context_wakeup(NULL);
 }
 
-//static void player_idle(gpointer data)
-//{
-//    gtk_poll();
-//	printf("+");
-//}
+static void player_idle(gpointer data)
+{
+    gtk_poll();
+    g_main_context_wakeup(NULL);
+}
 
 //static void streamripper_idle(gpointer data)
 //{
@@ -33,6 +32,7 @@ static void mpd_idle(gpointer data)
 int main (int argc, char *argv[])
 {
     gchar *path;
+    guint hndl_id0, hndl_id1;
     //char *lang;
     int opt;
     int longopt_index;
@@ -66,13 +66,22 @@ int main (int argc, char *argv[])
 
     gtk_init (&argc, &argv);
     gtk_app_init();
+//    gtk_window_fullscreen(GDK_WINDOW(gtk.main_window));
     gtk_widget_show (gtk.main_window);
 //	gtk_idle_add(player_idle, NULL);
-	gtk_idle_add(mpd_idle, NULL);
 //	gtk_idle_add(streamripper_idle, NULL);
+
+//    hndl_id = gtk_timeout_add(300, (GtkFunction)mpd_idle, NULL);
+
     gdk_threads_enter ();
+	hndl_id0 = g_idle_add((GtkFunction)mpd_idle, NULL);
+    hndl_id1 = gtk_idle_add(player_idle, NULL);
     gtk_main ();
+    gtk_idle_remove(hndl_id0);
+    gtk_idle_remove(hndl_id1);
     gdk_threads_leave ();
+
+//    gtk_timeout_remove(hndl_id);
 
 cleanup:
     
