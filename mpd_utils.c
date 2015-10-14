@@ -321,6 +321,16 @@ void mpd_prev(void)
     mpd_run_previous(mpd.conn);
 }
 
+void mpd_change_volume(int val)
+{
+    int volume = mpd.volume + val;
+    if (volume > 100)
+        volume = 100;
+    if (volume < 0)
+        volume = 0;
+    mpd_run_set_volume(mpd.conn, volume);
+}
+
 void mpd_put_state(void)
 {
     struct mpd_status *status;

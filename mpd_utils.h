@@ -47,6 +47,7 @@ char* mpd_get_album(struct mpd_song const *song);
 void mpd_toggle_play(void);
 void mpd_next(void);
 void mpd_prev(void);
+void mpd_change_volume(int val);
 
 int mpd_delete_current_song();
 

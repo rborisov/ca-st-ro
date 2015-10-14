@@ -35,14 +35,16 @@ static void cb_play_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 static void cb_vol_inc_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
-        printf("%s\n", __func__);
-            return;
+    printf("%s\n", __func__);
+    mpd_change_volume(5);
+    return;
 }
 static void cb_vol_dec_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
-        printf("%s\n", __func__);
-            return;
+    printf("%s\n", __func__);
+    mpd_change_volume(-5);
+    return;
 }
 static void cb_like_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
@@ -194,10 +196,12 @@ cleanup:
 
 void gtk_poll(void)
 {
-    GtkWidget *label = NULL, *label1 = NULL, *label2 = NULL, *label3 = NULL;
-    char *title = NULL, *artist = NULL, *album = NULL;
-    char time[11] = "00:00/00:00";
+    GtkWidget *label = NULL, *label1 = NULL, *label2 = NULL, *label3 = NULL,
+              *label4 = NULL;
+    gchar *title = NULL, *artist = NULL, *album = NULL;
+    gchar time[11] = "00:00/00:00";
     int minutes_elapsed, minutes_total;
+    gchar *str;
     
     if (mpd.song_id != gtk.song_id) {
         title = mpd_get_current_title();
@@ -222,11 +226,22 @@ void gtk_poll(void)
         gtk.song_id = mpd.song_id;
     }
 
+    /*
+     * time elapsed / total
+     * */
     minutes_elapsed = mpd.elapsed_time/60;
     minutes_total = mpd.total_time/60;
-
     sprintf(time, "%02d:%02d/%02d:%02d", minutes_elapsed, mpd.elapsed_time - minutes_elapsed*60,
             minutes_total, mpd.total_time - minutes_total*60);
     label3 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_time"));
     gtk_label_set (GTK_LABEL (label3), time);
+
+    /*
+     * volume
+     * */
+    label4 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_volume"));
+    str = g_strdup_printf ("%d", mpd.volume);
+    gtk_label_set (GTK_LABEL (label4), str);
+    g_free(str);
+
 }

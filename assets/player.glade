@@ -56,10 +56,15 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label2">
+              <object class="GtkLabel" id="lbl_volume">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">0</property>
+                <attributes>
+                  <attribute name="weight" value="semibold"/>
+                  <attribute name="foreground" value="#14f2f5921982"/>
+                  <attribute name="scale" value="1"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">True</property>
