@@ -11,12 +11,13 @@ find_package(PkgConfig REQUIRED)
 find_package(LibMPDClient REQUIRED)
 #find_package(GTK2 REQUIRED glade gtk)
 find_package(GTK2 REQUIRED gtk)
+find_package(Sqlite3 REQUIRED)
 
 include_directories(${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}
-    ${GTK2_INCLUDE_DIRS} ${LIBMPDCLIENT_INCLUDE_DIR}) 
+    ${GTK2_INCLUDE_DIRS} ${LIBMPDCLIENT_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIRS})
     #    ${GTK2_INCLUDE_DIRS} ${GTK2_GLADE_INCLUDE_DIR} ${LIBMPDCLIENT_INCLUDE_DIR})
 
-link_directories(${GTK2_LIBRARY_DIRS} ${LIBMPDCLIENT_LIBRARY_DIRS})
+    link_directories(${GTK2_LIBRARY_DIRS} ${LIBMPDCLIENT_LIBRARY_DIRS} ${SQLITE3_LIBRARY_DIRS})
 
 include(CheckCSourceCompiles)
 
@@ -29,11 +30,13 @@ set(SOURCES
     main.c
     mpd_utils.c
     gtk_utils.c
+    sql.c
+    db_utils.c
 )
 
 add_executable(player ${SOURCES})
 target_link_libraries(player ${CMAKE_THREAD_LIBS_INIT} ${GTK2_LIBRARIES} 
-    ${LIBMPDCLIENT_LIBRARIES})
+    ${LIBMPDCLIENT_LIBRARIES} ${SQLITE3_LIBRARIES})
     #    ${GTK2_GLADE_LIBRARY} ${LIBMPDCLIENT_LIBRARIES})
 
 install(TARGETS player DESTINATION bin)

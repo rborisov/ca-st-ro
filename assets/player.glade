@@ -34,7 +34,7 @@
                 <attributes>
                   <attribute name="weight" value="bold"/>
                   <attribute name="foreground" value="#022ef6cd0726"/>
-                  <attribute name="scale" value="2"/>
+                  <attribute name="scale" value="1"/>
                 </attributes>
               </object>
               <packing>
@@ -405,7 +405,7 @@
                       <object class="GtkImage" id="image4">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">media-playback-start.png</property>
+                        <property name="pixbuf">play.png</property>
                       </object>
                     </child>
                   </object>
