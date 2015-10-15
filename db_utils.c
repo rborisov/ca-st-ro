@@ -6,8 +6,6 @@
 #include "db_utils.h"
 #include "sql.h"
 
-#define DB_PATH "/home/ruinrobo"
-
 sqlite3 *conn;
 sqlite3_stmt *res;
 char *sqlchar0, *sqlchar1, *sqlchar2;
@@ -46,7 +44,7 @@ int db_init()
 {
     int rc;
     char dbpath[128];
-    sprintf(dbpath, "%s/rcardb.sqlite", DB_PATH);
+    sprintf(dbpath, "%s/rcardb.sqlite", DBPATH);
 
     char create_Songs_table_query[] = "CREATE TABLE IF NOT EXISTS Songs \
                                 (id INTEGER PRIMARY KEY, song TEXT, \
