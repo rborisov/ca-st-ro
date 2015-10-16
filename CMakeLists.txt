@@ -32,6 +32,7 @@ set(SOURCES
     gtk_utils.c
     sql.c
     db_utils.c
+    utils.c
 )
 
 add_executable(player ${SOURCES})

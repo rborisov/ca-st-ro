@@ -9,7 +9,7 @@
 #include <stdbool.h>
 #include <libintl.h>
 
-#include "mpd_utils.h"
+#include "utils.h"
 #include "gtk_utils.h"
 
 void mpd_idle(gpointer data)
@@ -68,20 +68,14 @@ int main (int argc, char *argv[])
     gtk_app_init();
 //    gtk_window_fullscreen(GDK_WINDOW(gtk.main_window));
     gtk_widget_show (gtk.main_window);
-//	gtk_idle_add(player_idle, NULL);
-//	gtk_idle_add(streamripper_idle, NULL);
-
-//    hndl_id = gtk_timeout_add(300, (GtkFunction)mpd_idle, NULL);
 
     gdk_threads_enter ();
 	hndl_id0 = g_idle_add((GtkFunction)mpd_idle, NULL);
-    hndl_id1 = gtk_idle_add(player_idle, NULL);
+    hndl_id1 = g_idle_add((GtkFunction)player_idle, NULL);
     gtk_main ();
     gtk_idle_remove(hndl_id0);
     gtk_idle_remove(hndl_id1);
     gdk_threads_leave ();
-
-//    gtk_timeout_remove(hndl_id);
 
 cleanup:
     

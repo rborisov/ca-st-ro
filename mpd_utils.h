@@ -31,12 +31,12 @@ struct t_mpd {
 
 } mpd;
 
-void mpd_poll();
+//void mpd_poll();
 
 unsigned mpd_get_queue_length();
 int mpd_insert ( char * );
 int mpd_crop();
-void get_random_song( char *, char *);
+//void get_random_song( char *, char *);
 int get_current_song_rating();
 char* mpd_get_title(struct mpd_song const *song);
 int mpd_list_artists();
@@ -48,6 +48,8 @@ void mpd_toggle_play(void);
 void mpd_next(void);
 void mpd_prev(void);
 void mpd_change_volume(int val);
+
+void mpd_put_state(void);
 
 int mpd_delete_current_song();
 

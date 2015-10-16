@@ -3,6 +3,7 @@
 #include <sqlite3.h>
 #include <syslog.h>
 
+#include "config.h"
 #include "db_utils.h"
 #include "sql.h"
 

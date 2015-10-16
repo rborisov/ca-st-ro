@@ -362,7 +362,7 @@ void mpd_put_state(void)
 
     mpd_status_free(status);
 }
-
+#if 0
 void mpd_poll()
 {
 //    printf("%d\n", mpd.conn_state);
@@ -410,4 +410,4 @@ void mpd_poll()
             syslog(LOG_INFO, "%s - mpd.conn_state %i\n", __func__, mpd.conn_state);
     }
 }
-
+#endif
