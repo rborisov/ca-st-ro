@@ -358,6 +358,7 @@ void mpd_put_state(void)
     mpd.elapsed_time = mpd_status_get_elapsed_time(status);
     mpd.total_time = mpd_status_get_total_time(status);
     mpd.song_id = mpd_status_get_song_id(status);
+
 //    printf("%d\n", mpd.song_id);
 
     mpd_status_free(status);

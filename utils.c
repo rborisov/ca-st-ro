@@ -90,6 +90,14 @@ void mpd_poll()
             break;
         case MPD_CONNECTED:
             mpd_put_state();
+            if (mpd.song_pos+1 >= mpd.queue_len)
+            {
+                char str[128] = "";
+                syslog(LOG_DEBUG, "%s: queue is empty\n", __func__);
+                get_random_song(str, "");
+                mpd_run_add(mpd.conn, str);
+            }
+
             break;
         default:
             syslog(LOG_INFO, "%s - mpd.conn_state %i\n", __func__, mpd.conn_state);

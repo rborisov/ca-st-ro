@@ -3,8 +3,10 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 
+#include "config.h"
 #include "gtk_utils.h"
 #include "mpd_utils.h"
+#include "db_utils.h"
 
 GtkBuilder  *xml = NULL;
 
@@ -104,7 +106,11 @@ void gtk_win_bg(char* file)
     gchar *path;
     GError* error = NULL;
 
-    path = g_strdup_printf ("%s/bkbg.jpg", PREFIX);
+    if (file) {
+        path = g_strdup_printf ("%s/%s", IMAGEPATH, file);
+    } else {
+        path = g_strdup_printf ("%s/bkbg.jpg", PREFIX);
+    }
     pixbuf = gdk_pixbuf_new_from_file (path,&error);
     if (error != NULL) {
         if (error->domain == GDK_PIXBUF_ERROR) {
@@ -197,32 +203,55 @@ cleanup:
 void gtk_poll(void)
 {
     GtkWidget *label = NULL, *label1 = NULL, *label2 = NULL, *label3 = NULL,
-              *label4 = NULL;
+              *label4 = NULL, *image0;
     gchar *title = NULL, *artist = NULL, *album = NULL;
     gchar time[11] = "00:00/00:00";
     int minutes_elapsed, minutes_total;
-    gchar *str;
+    gchar *str, *artist_art, *album_art;
     
     if (mpd.song_id != gtk.song_id) {
+        /*
+         * track artist album
+         */
         title = mpd_get_current_title();
-        label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_track"));
         if (title) {
             printf("%s %d %d\n", title, mpd.song_id, gtk.song_id);
+            label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_track"));
             gtk_label_set (GTK_LABEL (label), title);
         }
         artist = mpd_get_current_artist();
-        label1 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_artist"));
         if (artist) {
             printf("%s\n", artist);
+            label1 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_artist"));
             gtk_label_set (GTK_LABEL (label1), artist);
+            artist_art = db_get_artist_art(artist);
+       
+            //impossible to have album without artist
+            album = mpd_get_current_album();
+            if (album) {
+                printf("%s\n", album);
+                label2 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_album"));
+                gtk_label_set (GTK_LABEL (label2), album);
+                album_art = db_get_album_art(artist, album);
+            }
         }
-        album = mpd_get_current_album();
-        if (album)
-        label2 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_album"));
-        if (album) {
-            printf("%s\n", album);
-            gtk_label_set (GTK_LABEL (label2), album);
+        /*
+         * artist art
+         */
+        image0 = GTK_WIDGET (gtk_builder_get_object (xml, "img_artist"));
+        if (artist_art) {
+            printf("art: %s\n", artist_art);
+            str = g_strdup_printf("%s/%s", IMAGEPATH, artist_art);
+        } else {
+            str = g_strdup_printf("%s/art.png", IMAGEPATH);
         }
+        gtk_image_set_from_file(GTK_IMAGE (image0), str);
+
+        /*
+         * album art
+         */
+        gtk_win_bg(album_art);
+
         gtk.song_id = mpd.song_id;
     }
 

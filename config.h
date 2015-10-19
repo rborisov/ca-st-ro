@@ -4,6 +4,7 @@
 #define WORKPATH "/storage/ca-st-ro"
 #define MUSICPATH "/storage/Music"
 #define INCOMPLETEPATH "/storage/ca-st-ro/incomplete"
-#define DBPATH "/storage/ca-st-ro"
+#define DBPATH "/storage"
+#define IMAGEPATH "/storage/images"
 
 #endif
