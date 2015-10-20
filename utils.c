@@ -58,6 +58,27 @@ void get_random_song(char *str, char *path)
     }
 }
 
+char* get_current_album()
+{
+    const struct mpd_song *song;
+    char *str;
+    if (mpd.conn_state == MPD_CONNECTED) {
+        song = mpd_run_current_song(mpd.conn);
+        if(song == NULL) {
+            printf("song == NULL\n");
+            return NULL;
+        }
+        str = (char *)mpd_song_get_tag(song, MPD_TAG_ALBUM, 0);
+        if (str == NULL) {
+            str = db_get_song_album(mpd_song_get_tag(song, MPD_TAG_TITLE, 0),
+                    mpd_song_get_tag(song, MPD_TAG_ARTIST, 0));
+        }
+        mpd_song_free(song);
+    }
+
+    return str;
+}
+
 void mpd_poll()
 {
     switch (mpd.conn_state) {
@@ -90,7 +111,7 @@ void mpd_poll()
             break;
         case MPD_CONNECTED:
             mpd_put_state();
-            if (mpd.song_pos+1 >= mpd.queue_len)
+            if (mpd.song_pos+2 >= mpd.queue_len)
             {
                 char str[128] = "";
                 syslog(LOG_DEBUG, "%s: queue is empty\n", __func__);

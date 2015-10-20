@@ -308,7 +308,10 @@ int mpd_delete_current_song(struct mpd_connection *conn)
 #endif
 void mpd_toggle_play(void)
 {
-    mpd_run_toggle_pause(mpd.conn);
+    if (mpd.state == MPD_STATE_STOP)
+        mpd_run_play(mpd.conn);
+    else
+        mpd_run_toggle_pause(mpd.conn);
 }
 
 void mpd_next(void)

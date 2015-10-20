@@ -34,10 +34,10 @@ int main (int argc, char *argv[])
 {
     gchar *path;
     guint hndl_id0, hndl_id1;
-    //char *lang;
+//    char *lang;
     int opt;
     int longopt_index;
-    //setlocale (LC_ALL, lang);
+    setlocale (LC_ALL, "");//lang);
     static struct option long_options[] = {
         {"help", 0, NULL, 'h'},
         {"version", 0, NULL, 'v'},

@@ -63,8 +63,10 @@ static void cb_radio_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 static void cb_crop_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
-        printf("%s\n", __func__);
-            return;
+    printf("%s %i\n", __func__, mpd_get_queue_length());
+    mpd_crop();
+    printf("%s %i\n", __func__, mpd_get_queue_length());
+    return;
 }
 static void cb_dislike_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
@@ -103,6 +105,7 @@ void gtk_win_bg(char* file)
     GdkPixmap *background;
     GdkPixbuf *pixbuf;
     GtkStyle *style;
+    gint width, height;
     gchar *path;
     GError* error = NULL;
 
@@ -111,6 +114,8 @@ void gtk_win_bg(char* file)
     } else {
         path = g_strdup_printf ("%s/bkbg.jpg", PREFIX);
     }
+    gtk_window_get_size(gtk.main_window, &width, &height);
+    printf("bg_image: %s; window size: %ix%i\n", path, width, height);
     pixbuf = gdk_pixbuf_new_from_file (path,&error);
     if (error != NULL) {
         if (error->domain == GDK_PIXBUF_ERROR) {
@@ -122,11 +127,13 @@ void gtk_win_bg(char* file)
 
         g_printerr ("%s\n", error[0].message);
     } else {
+        pixbuf = gdk_pixbuf_scale_simple(pixbuf, width, width, GDK_INTERP_NEAREST);
         gdk_pixbuf_render_pixmap_and_mask (pixbuf, &background, NULL, 0);
         style = gtk_style_new ();
         style->bg_pixmap[0] = background;
         gtk_widget_set_style (GTK_WIDGET(gtk.main_window), GTK_STYLE(style));
     }
+    g_free(path);
 }
 
 void gtk_app_init(void)
@@ -207,7 +214,7 @@ void gtk_poll(void)
     gchar *title = NULL, *artist = NULL, *album = NULL;
     gchar time[11] = "00:00/00:00";
     int minutes_elapsed, minutes_total;
-    gchar *str, *artist_art, *album_art;
+    gchar *str, *artist_art, *album_art = NULL;
     
     if (mpd.song_id != gtk.song_id) {
         /*
@@ -227,30 +234,30 @@ void gtk_poll(void)
             artist_art = db_get_artist_art(artist);
        
             //impossible to have album without artist
-            album = mpd_get_current_album();
+            album = get_current_album();
             if (album) {
                 printf("%s\n", album);
                 label2 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_album"));
                 gtk_label_set (GTK_LABEL (label2), album);
                 album_art = db_get_album_art(artist, album);
             }
-        }
-        /*
-         * artist art
-         */
-        image0 = GTK_WIDGET (gtk_builder_get_object (xml, "img_artist"));
-        if (artist_art) {
-            printf("art: %s\n", artist_art);
-            str = g_strdup_printf("%s/%s", IMAGEPATH, artist_art);
-        } else {
-            str = g_strdup_printf("%s/art.png", IMAGEPATH);
-        }
-        gtk_image_set_from_file(GTK_IMAGE (image0), str);
+            /*
+             *          * artist art
+             *                   */
+            image0 = GTK_WIDGET (gtk_builder_get_object (xml, "img_artist"));
+            if (artist_art) {
+                printf("art: %s\n", artist_art);
+                str = g_strdup_printf("%s/%s", IMAGEPATH, artist_art);
+            } else {
+                str = g_strdup_printf("%s/art.png", IMAGEPATH);
+            }
+            gtk_image_set_from_file(GTK_IMAGE (image0), str);
 
-        /*
-         * album art
-         */
-        gtk_win_bg(album_art);
+            /*
+             *          * album art
+             *                   */
+            gtk_win_bg(album_art);
+        }
 
         gtk.song_id = mpd.song_id;
     }

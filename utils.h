@@ -5,5 +5,6 @@
 
 void get_random_song(char *str, char *path);
 void mpd_poll();
+char* get_current_album();
 
 #endif
