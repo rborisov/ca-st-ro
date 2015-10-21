@@ -40,17 +40,17 @@ void get_random_song(char *str, char *path)
                     mpd_get_artist(song));
             if (listened < listened0) {
                 listened0 = listened;
-                syslog(LOG_DEBUG, "listened: %i ", listened);
-                int probability = 50 +
+//                syslog(LOG_DEBUG, "listened: %i ", listened);
+                int probability = 50 - listened +
                     db_get_song_rating(mpd_get_title(song),
                             mpd_get_artist(song));
-                syslog(LOG_DEBUG, "probability: %i ", probability);
+//                syslog(LOG_DEBUG, "probability: %i ", probability);
                 bool Yes = (rand() % 100) < probability;
                 if (Yes) {
                     sprintf(str, "%s", mpd_song_get_uri(song));
-                    syslog(LOG_DEBUG, "uri: %s ", str);
-                    syslog(LOG_DEBUG, "title: %s ", mpd_get_title(song));
-                    syslog(LOG_DEBUG, "artist: %s", mpd_get_artist(song));
+                    syslog(LOG_DEBUG, "probability: %i; uri: %s ", probability, str);
+//                    syslog(LOG_DEBUG, "title: %s ", mpd_get_title(song));
+//                    syslog(LOG_DEBUG, "artist: %s", mpd_get_artist(song));
                 }
             }
         }
@@ -111,12 +111,15 @@ void mpd_poll()
             break;
         case MPD_CONNECTED:
             mpd_put_state();
-            if (mpd.song_pos+2 >= mpd.queue_len)
+            if (mpd.song_pos+1 >= mpd.queue_len)
             {
                 char str[128] = "";
-                syslog(LOG_DEBUG, "%s: queue is empty\n", __func__);
+                syslog(LOG_DEBUG, "%s: queue is empty %i(%i)\n", __func__, mpd.song_pos, mpd.queue_len);
                 get_random_song(str, "");
-                mpd_run_add(mpd.conn, str);
+                if (strlen(str) > 5)
+                if (!mpd_run_add(mpd.conn, str)) {
+                    syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(mpd.conn));
+                }
             }
 
             break;
