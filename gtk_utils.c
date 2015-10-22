@@ -2,6 +2,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
+#include <libnotify/notify.h>
 
 #include "config.h"
 #include "gtk_utils.h"
@@ -247,17 +248,28 @@ void gtk_poll(void)
             image0 = GTK_WIDGET (gtk_builder_get_object (xml, "img_artist"));
             if (artist_art) {
                 printf("art: %s\n", artist_art);
-                str = g_strdup_printf("%s/%s", IMAGEPATH, artist_art);
+                artist_art = g_strdup_printf("%s/%s", IMAGEPATH, artist_art);
             } else {
-                str = g_strdup_printf("%s/art.png", IMAGEPATH);
+                artist_art = g_strdup_printf("%s/art.png", IMAGEPATH);
             }
-            gtk_image_set_from_file(GTK_IMAGE (image0), str);
+            gtk_image_set_from_file(GTK_IMAGE (image0), artist_art);
 
             /*
-             *          * album art
-             *                   */
+             * album art
+             */
             gtk_win_bg(album_art);
         }
+
+        /*
+         * notification
+         */
+        notify_init (title);
+        if (album)
+            artist= g_strdup_printf("%s\n%s", artist, album);
+        NotifyNotification * TrackNotify = notify_notification_new (title, artist, artist_art);
+        notify_notification_show (TrackNotify, NULL);
+        g_object_unref(G_OBJECT(TrackNotify));
+        notify_uninit();
 
         gtk.song_id = mpd.song_id;
     }
