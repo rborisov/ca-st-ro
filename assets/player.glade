@@ -3,7 +3,15 @@
   <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="window1">
+    <property name="width_request">700</property>
+    <property name="height_request">400</property>
     <property name="can_focus">False</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="default_width">700</property>
+    <property name="default_height">400</property>
+    <property name="decorated">False</property>
+    <property name="gravity">east</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -34,6 +42,7 @@
                 <attributes>
                   <attribute name="weight" value="bold"/>
                   <attribute name="foreground" value="#022ef6cd0726"/>
+                  <attribute name="background" value="#089003d303d3"/>
                   <attribute name="scale" value="1"/>
                 </attributes>
               </object>
@@ -63,6 +72,7 @@
                 <attributes>
                   <attribute name="weight" value="semibold"/>
                   <attribute name="foreground" value="#14f2f5921982"/>
+                  <attribute name="background" value="#0f1005950595"/>
                   <attribute name="scale" value="1"/>
                 </attributes>
               </object>
@@ -113,6 +123,11 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">0(0)</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="foreground" value="#12c3f7e107c7"/>
+                  <attribute name="background" value="#112107a507a5"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -137,6 +152,11 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">0</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="foreground" value="#08a0f92402ac"/>
+                  <attribute name="background" value="#0bd004b404b4"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -157,13 +177,15 @@
             <property name="can_focus">False</property>
             <child>
               <object class="GtkImage" id="img_artist">
+                <property name="width_request">100</property>
+                <property name="height_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -175,7 +197,8 @@
                   <object class="GtkAccelLabel" id="lbl_track">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">track</property>
+                    <property name="label" translatable="yes">track title</property>
+                    <property name="wrap">True</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                       <attribute name="foreground" value="#ea8db6ed230a"/>
@@ -195,6 +218,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">artist</property>
+                    <property name="wrap">True</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                       <attribute name="foreground" value="#9d40ea8d230a"/>
@@ -214,6 +238,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">album</property>
+                    <property name="wrap">True</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                       <attribute name="foreground" value="#e5eeea8d230a"/>
