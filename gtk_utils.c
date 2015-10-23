@@ -104,7 +104,7 @@ static gboolean cb_key_press (G_GNUC_UNUSED GtkWidget *widget,
 void gtk_win_bg(char* file)
 {
     GdkPixmap *background;
-    GdkPixbuf *pixbuf;
+    GdkPixbuf *pixbuf, *pixbuf1;
     GtkStyle *style;
     gint width, height;
     gchar *path;
@@ -128,7 +128,7 @@ void gtk_win_bg(char* file)
 
         g_printerr ("%s\n", error[0].message);
     } else {
-        pixbuf = gdk_pixbuf_scale_simple(pixbuf, width, width, GDK_INTERP_NEAREST);
+        pixbuf = gdk_pixbuf_scale_simple(pixbuf, width, width, GDK_INTERP_BILINEAR); //GDK_INTERP_TILES); //GDK_INTERP_NEAREST);
         gdk_pixbuf_render_pixmap_and_mask (pixbuf, &background, NULL, 0);
         style = gtk_style_new ();
         style->bg_pixmap[0] = background;
@@ -139,8 +139,6 @@ void gtk_win_bg(char* file)
 
 void gtk_app_init(void)
 {
-//    GtkWidget    *main_window;
-//    GtkBuilder  *xml = NULL;
     GdkColor color;
     GError* error = NULL;
     gchar *path;
@@ -263,13 +261,15 @@ void gtk_poll(void)
         /*
          * notification
          */
-        notify_init (title);
-        if (album)
-            artist= g_strdup_printf("%s\n%s", artist, album);
-        NotifyNotification * TrackNotify = notify_notification_new (title, artist, artist_art);
-        notify_notification_show (TrackNotify, NULL);
-        g_object_unref(G_OBJECT(TrackNotify));
-        notify_uninit();
+        if (title && artist) {
+            notify_init (title);
+            if (album)
+                artist= g_strdup_printf("%s\n%s", artist, album);
+            NotifyNotification * TrackNotify = notify_notification_new (title, artist, artist_art);
+            notify_notification_show (TrackNotify, NULL);
+            g_object_unref(G_OBJECT(TrackNotify));
+            notify_uninit();
+        }
 
         gtk.song_id = mpd.song_id;
     }
