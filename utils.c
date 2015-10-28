@@ -79,6 +79,38 @@ char* get_current_album()
     return str;
 }
 
+int mpd_db_get_current_song_rating()
+{
+    int rating;
+    struct mpd_song *song;
+
+    song = mpd_run_current_song(mpd.conn);
+    if(song == NULL)
+        return 0;
+
+    rating = db_get_song_rating(mpd_get_title(song), mpd_get_artist(song));
+
+    mpd_song_free(song);
+    return rating;
+}
+
+int mpd_db_update_current_song_rating(int increase)
+{
+    int rating = 0;
+    struct mpd_song *song;
+
+    song = mpd_run_current_song(mpd.conn);
+    if(song == NULL)
+        return 0;
+
+    rating = db_update_song_rating(mpd_get_title(song),
+            mpd_song_get_tag(song, MPD_TAG_ARTIST, 0), increase);
+
+    mpd_song_free(song);
+
+    return rating;
+}
+
 void mpd_poll()
 {
     switch (mpd.conn_state) {

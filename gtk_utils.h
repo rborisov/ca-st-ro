@@ -2,10 +2,11 @@
 #define __GTK_UTILS_H__
 
 #include <libintl.h>
- 
+#include "config.h"
+
 #define UI_FILE "player.glade"
 #define APPNAME "player"
-#define PREFIX "../assets"
+/*#define PREFIX "../assets"*/
 #define VERSION "0.1"
 
 #define _(String) gettext (String)

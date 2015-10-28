@@ -11,6 +11,16 @@
 
 GtkBuilder  *xml = NULL;
 
+static void ui_song_rating_update(int rating)
+{
+    GtkWidget *label = NULL;
+    gchar *str;
+    label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_rating"));
+    str = g_strdup_printf ("%d", rating);
+    gtk_label_set (GTK_LABEL (label), str);
+    g_free(str);
+}
+
 static void cb_prev_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
         G_GNUC_UNUSED gpointer   data)
 {
@@ -23,6 +33,7 @@ static void cb_next_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
         G_GNUC_UNUSED gpointer  data)
 {
     printf("%s\n", __func__);
+    mpd_db_update_current_song_rating(-1);
     mpd_next();
     return;
 }
@@ -52,14 +63,15 @@ static void cb_vol_dec_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 static void cb_like_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
-        printf("%s\n", __func__);
-            return;
+    printf("%s\n", __func__);
+    ui_song_rating_update(mpd_db_update_current_song_rating(5));
+    return;
 }
 static void cb_radio_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
-        printf("%s\n", __func__);
-            return;
+    printf("%s\n", __func__);
+    return;
 }
 static void cb_crop_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
@@ -72,8 +84,10 @@ static void cb_crop_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 static void cb_dislike_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
-        printf("%s\n", __func__);
-            return;
+    printf("%s\n", __func__);
+    mpd_db_update_current_song_rating(-5);
+    mpd_next();
+    return;
 }
 
 static gboolean cb_key_press (G_GNUC_UNUSED GtkWidget *widget,
@@ -234,11 +248,13 @@ void gtk_poll(void)
        
             //impossible to have album without artist
             album = get_current_album();
+            label2 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_album"));
             if (album) {
                 printf("%s\n", album);
-                label2 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_album"));
                 gtk_label_set (GTK_LABEL (label2), album);
                 album_art = db_get_album_art(artist, album);
+            } else {
+                gtk_label_set (GTK_LABEL (label2), "");
             }
             /*
              *          * artist art
@@ -257,6 +273,8 @@ void gtk_poll(void)
              */
             gtk_win_bg(album_art);
         }
+
+        ui_song_rating_update(mpd_db_get_current_song_rating());
 
         /*
          * notification
