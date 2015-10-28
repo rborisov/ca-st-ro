@@ -8,6 +8,7 @@
 #include "gtk_utils.h"
 #include "mpd_utils.h"
 #include "db_utils.h"
+#include "utils.h"
 
 GtkBuilder  *xml = NULL;
 
@@ -280,9 +281,17 @@ void gtk_poll(void)
          * notification
          */
         if (title && artist) {
+            /*
+             * update DB with increased num played
+             */
+            int np, rating;
+            np = db_listen_song(title, artist, album);
+            rating = mpd_db_get_current_song_rating();
             notify_init (title);
             if (album)
-                artist= g_strdup_printf("%s\n%s", artist, album);
+                artist= g_strdup_printf("%i %i\n%s\n%s", rating, np, artist, album);
+            else
+                artist= g_strdup_printf("%i %i\n%s", rating, np, artist);
             NotifyNotification * TrackNotify = notify_notification_new (title, artist, artist_art);
             notify_notification_show (TrackNotify, NULL);
             g_object_unref(G_OBJECT(TrackNotify));
