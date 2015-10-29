@@ -14,6 +14,7 @@
 struct t_gtk {
     GtkWidget    *main_window;
     int song_id;
+    unsigned queue_version;
 } gtk;
 
 void gtk_poll(void);

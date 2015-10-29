@@ -22,6 +22,16 @@ static void ui_song_rating_update(int rating)
     g_free(str);
 }
 
+static void ui_queue_update(int songpos, int queue_length)
+{
+    GtkWidget *label = NULL;
+    gchar *str;
+    label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_queue_length"));
+    str = g_strdup_printf ("%d(%d)", songpos, queue_length);
+    gtk_label_set (GTK_LABEL (label), str);
+    g_free(str);
+}
+
 static void cb_prev_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
         G_GNUC_UNUSED gpointer   data)
 {
@@ -217,6 +227,7 @@ void gtk_app_init(void)
     gtk_win_bg(NULL);
 
     gtk.song_id = -555; //magic number to show song at beginning
+    gtk.queue_version = 0;
 cleanup:
     return;
 }
@@ -229,7 +240,9 @@ void gtk_poll(void)
     gchar time[11] = "00:00/00:00";
     int minutes_elapsed, minutes_total;
     gchar *str, *artist_art, *album_art = NULL;
-    
+   
+    ui_queue_update(mpd.song_pos+1, mpd.queue_len);
+
     if (mpd.song_id != gtk.song_id) {
         /*
          * track artist album
@@ -304,12 +317,15 @@ void gtk_poll(void)
     /*
      * time elapsed / total
      * */
-    minutes_elapsed = mpd.elapsed_time/60;
+/*    minutes_elapsed = mpd.elapsed_time/60;
     minutes_total = mpd.total_time/60;
     sprintf(time, "%02d:%02d/%02d:%02d", minutes_elapsed, mpd.elapsed_time - minutes_elapsed*60,
-            minutes_total, mpd.total_time - minutes_total*60);
+            minutes_total, mpd.total_time - minutes_total*60);*/
+    str = g_strdup_printf ("%02i:%02i/%02i:%02i", mpd.elapsed_time / 60, mpd.elapsed_time % 60,
+            mpd.total_time / 60, mpd.total_time % 60);
     label3 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_time"));
-    gtk_label_set (GTK_LABEL (label3), time);
+    gtk_label_set (GTK_LABEL (label3), str);
+    g_free(str);
 
     /*
      * volume
