@@ -2,7 +2,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
-#include <libnotify/notify.h>
 
 #include "config.h"
 #include "gtk_utils.h"
@@ -305,9 +304,9 @@ void gtk_poll(void)
                 artist= g_strdup_printf("%i %i\n%s\n%s", rating, np, artist, album);
             else
                 artist= g_strdup_printf("%i %i\n%s", rating, np, artist);
-            NotifyNotification * TrackNotify = notify_notification_new (title, artist, artist_art);
-            notify_notification_show (TrackNotify, NULL);
-            g_object_unref(G_OBJECT(TrackNotify));
+            gtk.TrackNotify = notify_notification_new (title, artist, artist_art);
+            notify_notification_show (gtk.TrackNotify, NULL);
+            g_object_unref(G_OBJECT(gtk.TrackNotify));
             notify_uninit();
         }
 

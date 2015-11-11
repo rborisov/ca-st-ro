@@ -2,6 +2,7 @@
 #define __GTK_UTILS_H__
 
 #include <libintl.h>
+#include <libnotify/notify.h>
 #include "config.h"
 
 #define UI_FILE "player.glade"
@@ -13,6 +14,7 @@
 
 struct t_gtk {
     GtkWidget    *main_window;
+    NotifyNotification * TrackNotify;
     int song_id;
     unsigned queue_version;
 } gtk;

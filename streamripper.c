@@ -6,6 +6,7 @@
 #include <math.h>
 #include <time.h>
 #include <syslog.h>
+#include <locale.h>
 
 #include "streamripper.h"
 
@@ -24,6 +25,22 @@ STREAM_PREFS prefs;
 char chrbuff[128] = "";
 //char filepath[128] = "";
 char newsongname[128] = "";
+
+void mstrncpy (mchar* dst, mchar* src, int n)
+{
+    int i = 0;
+    for (i = 0; i < n-1; i++) {
+        if (!(dst[i] = src[i])) {
+            return;
+        }
+    }
+    dst[i] = 0;
+}
+void sr_set_locale (void)
+{
+    setlocale (LC_ALL, "");
+    setlocale (LC_CTYPE, "");
+}
 
 void streamripper_set_url(char* url)
 {
@@ -140,8 +157,6 @@ void init_streamripper()
     const char* incomplete;
 
     sr_set_locale ();
-    debug_set_filename("streamripper.log");
-    debug_enable();
 
     prefs_load ();
     prefs.overwrite = OVERWRITE_ALWAYS;

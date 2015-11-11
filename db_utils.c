@@ -335,6 +335,7 @@ int db_listen_song(char* song, char* artist, char* album)
         rc = sql_exec(conn, "INSERT INTO Songs (song, artist, added, played, numplayed, rating)"
                 " VALUES ('%s', '%s', DATETIME('NOW', 'LOCALTIME'), DATETIME('NOW', 'LOCALTIME'), 1, 0)",
                 song, artist);
+        np = 1;
     }
     if (rc != SQLITE_OK)
         return 0;

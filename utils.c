@@ -1,6 +1,7 @@
 #include <syslog.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "db_utils.h"
 #include "mpd_utils.h"
