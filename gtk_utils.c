@@ -167,6 +167,8 @@ void gtk_app_init(void)
     GError* error = NULL;
     gchar *path;
 
+    init_utils();
+
     gdk_color_parse("black", &color);
 
     path = g_strdup_printf ("%s/%s", PREFIX, UI_FILE);

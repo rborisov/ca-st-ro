@@ -59,10 +59,45 @@ void get_random_song(char *str, char *path)
     }
 }
 
+struct memstruct {
+    char *memory;
+    size_t size;
+};
+struct memstruct albumstr;
+static size_t WriteMemory(void *contents, size_t size, size_t nmemb, void *userp)
+{
+    size_t realsize = size * nmemb;
+    struct memstruct *mem = (struct MemoryStruct *)userp;
+
+    printf("%i %i\n", size, nmemb);
+
+    mem->memory = realloc(mem->memory, realsize + 1);
+    if(mem->memory == NULL) {
+        /* out of memory! */
+        printf("not enough memory (realloc returned NULL)\n");
+        return 0;
+    }
+
+    memcpy(mem->memory, contents, realsize);
+    mem->size = realsize;
+    mem->memory[mem->size] = 0;
+
+    return realsize;
+}
+void init_utils()
+{
+    albumstr.memory = malloc(1);
+    albumstr.size = 0;
+}
+void clean_utils()
+{
+    free(albumstr.memory);
+}
+
 char* get_current_album()
 {
     const struct mpd_song *song;
-    char *str;
+    char *str = NULL;
     if (mpd.conn_state == MPD_CONNECTED) {
         song = mpd_run_current_song(mpd.conn);
         if(song == NULL) {
@@ -73,7 +108,14 @@ char* get_current_album()
         if (str == NULL) {
             str = db_get_song_album(mpd_song_get_tag(song, MPD_TAG_TITLE, 0),
                     mpd_song_get_tag(song, MPD_TAG_ARTIST, 0));
+            printf("%s: no MPD_TAG_ALBUM\n", __func__);
         }
+        if (str) {
+            WriteMemory(str, 1, strlen(str), (void *)&albumstr);
+            str = albumstr.memory;
+            printf("%s: %s\n", __func__, albumstr.memory);
+        }
+
         mpd_song_free(song);
     }
 
