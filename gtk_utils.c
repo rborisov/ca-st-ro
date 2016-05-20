@@ -253,6 +253,7 @@ void gtk_poll(void)
     }
 
     if (mpd.song_id != gtk.song_id) {
+        gtk_win_bg(NULL); //clean win bg
         /*
          * track artist album
          */
