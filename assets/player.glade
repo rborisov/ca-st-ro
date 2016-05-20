@@ -285,7 +285,7 @@
                       <object class="GtkImage" id="image8">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">bookmark-missing.svg</property>
+                        <property name="stock">gtk-about</property>
                       </object>
                     </child>
                   </object>
@@ -316,7 +316,7 @@
                       <object class="GtkImage" id="image9">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">nm-adhoc.png</property>
+                        <property name="stock">gtk-disconnect</property>
                       </object>
                     </child>
                   </object>
@@ -347,7 +347,7 @@
                       <object class="GtkImage" id="image10">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">view-refresh.png</property>
+                        <property name="stock">gtk-refresh</property>
                       </object>
                     </child>
                   </object>
@@ -378,7 +378,7 @@
                       <object class="GtkImage" id="image11">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">text-x-install.png</property>
+                        <property name="icon_name">gnome-fs-bookmark-missing</property>
                       </object>
                     </child>
                   </object>
@@ -410,7 +410,7 @@
                       <object class="GtkImage" id="image3">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">media-skip-backward.png</property>
+                        <property name="stock">gtk-media-previous</property>
                       </object>
                     </child>
                   </object>
@@ -430,7 +430,7 @@
                       <object class="GtkImage" id="image4">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">play.png</property>
+                        <property name="stock">gtk-media-play</property>
                       </object>
                     </child>
                   </object>
@@ -450,7 +450,7 @@
                       <object class="GtkImage" id="image5">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">media-skip-forward.png</property>
+                        <property name="stock">gtk-media-next</property>
                       </object>
                     </child>
                   </object>
@@ -478,10 +478,10 @@
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
                     <child>
-                      <object class="GtkImage" id="image6">
+                      <object class="GtkImage" id="image1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">audio-volume-high.png</property>
+                        <property name="stock">gtk-go-up</property>
                       </object>
                     </child>
                   </object>
@@ -501,7 +501,7 @@
                       <object class="GtkImage" id="image7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">audio-volume-low.png</property>
+                        <property name="stock">gtk-go-down</property>
                       </object>
                     </child>
                   </object>

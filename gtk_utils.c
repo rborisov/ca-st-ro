@@ -229,6 +229,8 @@ void gtk_app_init(void)
 
     gtk.song_id = -555; //magic number to show song at beginning
     gtk.queue_version = 0;
+
+    gtk.conn_state = -555;
 cleanup:
     return;
 }
@@ -243,6 +245,12 @@ void gtk_poll(void)
     gchar *str, *artist_art, *album_art = NULL;
    
     ui_queue_update(mpd.song_pos+1, mpd.queue_len);
+
+    if (mpd.conn_state != gtk.conn_state) {
+        //change background image while mpd disconnected
+
+        gtk.conn_state = mpd.conn_state;
+    }
 
     if (mpd.song_id != gtk.song_id) {
         /*

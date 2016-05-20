@@ -17,6 +17,8 @@ struct t_gtk {
     NotifyNotification * TrackNotify;
     int song_id;
     unsigned queue_version;
+    int conn_state;
+    char bg_file[128];
 } gtk;
 
 void gtk_poll(void);
