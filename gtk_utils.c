@@ -184,6 +184,7 @@ void gtk_app_init(void)
     gtk_builder_connect_signals (xml, NULL);
 
     gtk.main_window = GTK_WIDGET (gtk_builder_get_object (xml, "window1"));
+    gtk_window_maximize(gtk.main_window);
     gtk_widget_modify_bg(GTK_WIDGET(gtk.main_window), GTK_STATE_NORMAL, &color);
     
     g_signal_connect (G_OBJECT(gtk.main_window), "key-press-event", G_CALLBACK(cb_key_press), NULL);
