@@ -2,9 +2,31 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
+#include "config.h"
 #include "db_utils.h"
 #include "mpd_utils.h"
+
+void rm_current_songfile()
+{
+    struct mpd_song *song = NULL;
+    char *songuri = NULL;
+    char filepath[255];
+    song = mpd_run_current_song(mpd.conn);
+    if (song == NULL) {
+        syslog(LOG_DEBUG, "%s: no current song", __func__);
+        return;
+    }
+    songuri = mpd_song_get_uri(song);
+    sprintf(filepath, "%s/%s", MUSICPATH, songuri);
+    syslog(LOG_DEBUG, "%s: lets delete %s forever", __func__, filepath);
+    if (unlink(filepath) != 0)
+        syslog(LOG_DEBUG, "%s: cant", __func__);
+    mpd_song_free(song);
+
+    return;
+}
 
 void get_random_song(char *str, char *path)
 {

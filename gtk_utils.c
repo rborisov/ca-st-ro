@@ -80,7 +80,8 @@ static void cb_like_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 static void cb_radio_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
-    printf("%s\n", __func__);
+    printf("%s TODO: WRONG BUTTON\n", __func__);
+    rm_current_songfile();
     return;
 }
 static void cb_crop_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
@@ -235,6 +236,13 @@ cleanup:
     return;
 }
 
+gtk_setlabel(char* lbl, char* str)
+{
+    GtkWidget *label = NULL;
+    label = GTK_WIDGET(gtk_builder_get_object (xml, lbl));
+    gtk_label_set(GTK_LABEL(label), "");
+}
+
 void gtk_poll(void)
 {
     GtkWidget *label = NULL, *label1 = NULL, *label2 = NULL, *label3 = NULL,
@@ -254,6 +262,9 @@ void gtk_poll(void)
 
     if (mpd.song_id != gtk.song_id) {
         gtk_win_bg(NULL); //clean win bg
+	gtk_setlabel("lbl_track", "");
+	gtk_setlabel("lbl_artist", "");
+	gtk_setlabel("lbl_album", "");
         /*
          * track artist album
          */
