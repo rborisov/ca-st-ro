@@ -10,7 +10,7 @@ char nullstr[1] = "";
 char titlebuf[128] = "";
 char artistbuf[128] = "";
 char albumbuf[128] = "";
-
+/*
 char* mpd_get_config_music_directory()
 {
     char *music_directory = NULL;
@@ -24,7 +24,7 @@ char* mpd_get_config_music_directory()
     }
     return music_directory;
 }
-
+*/
 int mpd_crop()
 {
     struct mpd_status *status = mpd_run_status(mpd.conn);
