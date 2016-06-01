@@ -19,5 +19,6 @@ int db_get_prior_song_by_rating_first();
 int db_get_song_by_rating_next();
 char *db_get_song_name(int id);
 char *db_get_song_artist(int id);
+int db_get_song_played(char* song, char* artist);
 
 #endif

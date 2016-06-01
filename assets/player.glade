@@ -6,7 +6,6 @@
     <property name="width_request">700</property>
     <property name="height_request">400</property>
     <property name="can_focus">False</property>
-    <property name="resizable">True</property>
     <property name="default_width">700</property>
     <property name="default_height">400</property>
     <property name="decorated">False</property>
@@ -165,7 +164,7 @@
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
@@ -184,7 +183,7 @@
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">False</property>
+                <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>

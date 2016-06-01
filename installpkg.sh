@@ -6,4 +6,5 @@ tar xvf pkg.tar.gz
 #cp -r pkg/ubuntuhome/* /home/rborisov/
 rsync -av pkg/storage/ /storage/
 rsync -av pkg/ubuntuhome/ /home/rborisov/
-#/storage/ca-st-ro/bin/player &
+rm -r pkg
+killall player

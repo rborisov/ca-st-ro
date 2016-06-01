@@ -2,6 +2,7 @@
 #include <string.h>
 #include <sqlite3.h>
 #include <syslog.h>
+#include <time.h>
 
 #include "config.h"
 #include "db_utils.h"
@@ -9,7 +10,7 @@
 
 sqlite3 *conn;
 sqlite3_stmt *res;
-char *sqlchar0, *sqlchar1, *sqlchar2;
+char *sqlchar0, *sqlchar1, *sqlchar2, *sqlchar3;
 
 void convert_str(char *instr)
 {
@@ -125,6 +126,24 @@ int db_get_song_numplayed(char* song, char* artist)
             "song = '%s' AND artist = '%s'", song, artist);
     //printf("%s found numplayed %i\n", __func__, np);
     return np;
+}
+
+int db_get_song_played(char* song, char* artist)
+{
+/*    struct tm tm, *now;
+    time_t rawtime;
+
+    time(&rawtime);
+    now = localtime(&rawtime);
+
+    convert_str(song);
+    convert_str(artist);
+    sqlite3_free(sqlchar3);
+    sqlchar3 = sql_get_text_field(conn, "SELECT played FROM Songs WHERE "
+            "song = '%s' AND artist = '%s'", song, artist);
+    syslog("%s -- %s", sqlchar3, asctime(now));
+    strptime(sqlchar3, "%Y-%m-%d %H:%M:%S", &tm);*/
+    return 0;
 }
 
 int db_get_album_id(char* artist, char* album)

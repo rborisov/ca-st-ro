@@ -33,6 +33,7 @@ void get_random_song(char *str, char *path)
     struct mpd_entity *entity;
     int listened0 = 65000,
         skipnum, numberofsongs = 0;
+    bool Done = false;
 
     struct mpd_stats *stats = mpd_run_stats(mpd.conn);
     if (stats == NULL)
@@ -41,7 +42,7 @@ void get_random_song(char *str, char *path)
     mpd_stats_free(stats);
     skipnum = rand() % numberofsongs;
 
-    syslog(LOG_DEBUG, "%s: path %s; number of songs: %i skip: %i\n",
+    syslog(LOG_DEBUG, "%s: path: %s; number of songs: %i skip: %i\n",
             __func__, path, numberofsongs, skipnum);
     if (!mpd_send_list_all_meta(mpd.conn, ""))//path))
     {
@@ -57,10 +58,13 @@ void get_random_song(char *str, char *path)
             if (skipnum-- > 0)
                 continue;
 
-            int listened;
+            int listened, whenplayed;
             song = mpd_entity_get_song(entity);
             listened = db_get_song_numplayed(mpd_get_title(song),
                     mpd_get_artist(song));
+	    whenplayed = db_get_song_played(mpd_get_title(song),
+                    mpd_get_artist(song));
+            syslog(LOG_DEBUG, "%s: played: %d ago", __func__, whenplayed);
             if (listened < listened0) {
                 listened0 = listened;
 //                syslog(LOG_DEBUG, "listened: %i ", listened);
@@ -69,11 +73,12 @@ void get_random_song(char *str, char *path)
                             mpd_get_artist(song));
 //                syslog(LOG_DEBUG, "probability: %i ", probability);
                 bool Yes = (rand() % 100) < probability;
-                if (Yes) {
+                if (Yes && !Done) {
                     sprintf(str, "%s", mpd_song_get_uri(song));
-                    syslog(LOG_DEBUG, "probability: %i; uri: %s ", probability, str);
+                    syslog(LOG_DEBUG, "%s: probability: %i; uri: %s ", __func__, probability, str);
 //                    syslog(LOG_DEBUG, "title: %s ", mpd_get_title(song));
 //                    syslog(LOG_DEBUG, "artist: %s", mpd_get_artist(song));
+		    Done = true;
                 }
             }
         }
