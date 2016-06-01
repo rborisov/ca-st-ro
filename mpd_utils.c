@@ -11,6 +11,20 @@ char titlebuf[128] = "";
 char artistbuf[128] = "";
 char albumbuf[128] = "";
 
+char* mpd_get_config_music_directory()
+{
+    char *music_directory = NULL;
+    if (mpd_send_command(mpd.conn, "config", NULL))
+    {
+	    struct mpd_pair *pair = mpd_recv_pair_named(mpd.conn, "music_directory");
+	    if (pair != NULL) {
+		    music_directory = strdup(pair->value);
+		    mpd_return_pair(conn, pair);
+	    }
+    }
+    return music_directory;
+}
+
 int mpd_crop()
 {
     struct mpd_status *status = mpd_run_status(mpd.conn);
@@ -308,7 +322,7 @@ int mpd_delete_current_song(struct mpd_connection *conn)
 #endif
 void mpd_toggle_play(void)
 {
-    if (mpd.state == MPD_STATE_STOP || mpd.state == MPD_STATE_PAUSE)
+    if (mpd.state == MPD_STATE_STOP)
         mpd_run_play(mpd.conn);
     else
         mpd_run_toggle_pause(mpd.conn);
