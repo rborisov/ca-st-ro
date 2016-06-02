@@ -31,24 +31,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="lbl_time">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">0:00/0:00</property>
-                <property name="justify">center</property>
-                <property name="single_line_mode">True</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                  <attribute name="foreground" value="#022ef6cd0726"/>
-                  <attribute name="background" value="#089003d303d3"/>
-                  <attribute name="scale" value="1"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
+              <placeholder/>
             </child>
             <child>
               <object class="GtkImage" id="image12">
@@ -63,22 +46,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="lbl_volume">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">0</property>
-                <attributes>
-                  <attribute name="weight" value="semibold"/>
-                  <attribute name="foreground" value="#14f2f5921982"/>
-                  <attribute name="background" value="#0f1005950595"/>
-                  <attribute name="scale" value="1"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">3</property>
-              </packing>
+              <placeholder/>
             </child>
             <child>
               <object class="GtkImage" id="image13">
@@ -117,21 +85,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="lbl_queue_length">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">0(0)</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                  <attribute name="foreground" value="#12c3f7e107c7"/>
-                  <attribute name="background" value="#112107a507a5"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">7</property>
-              </packing>
+              <placeholder/>
             </child>
             <child>
               <object class="GtkImage" id="image16">
@@ -146,21 +100,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="lbl_rating">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">0</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                  <attribute name="foreground" value="#08a0f92402ac"/>
-                  <attribute name="background" value="#0bd004b404b4"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">9</property>
-              </packing>
+              <placeholder/>
             </child>
           </object>
           <packing>
@@ -195,8 +135,9 @@
                   <object class="GtkAccelLabel" id="lbl_track">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0.89999997615814209</property>
                     <property name="label" translatable="yes">track title</property>
-                    <property name="wrap">True</property>
+                    <property name="single_line_mode">True</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                       <attribute name="foreground" value="#ea8db6ed230a"/>
@@ -215,8 +156,9 @@
                   <object class="GtkAccelLabel" id="lbl_artist">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0.89999997615814209</property>
                     <property name="label" translatable="yes">artist</property>
-                    <property name="wrap">True</property>
+                    <property name="single_line_mode">True</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                       <attribute name="foreground" value="#9d40ea8d230a"/>
@@ -235,8 +177,9 @@
                   <object class="GtkAccelLabel" id="lbl_album">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0.89999997615814209</property>
                     <property name="label" translatable="yes">album</property>
-                    <property name="wrap">True</property>
+                    <property name="single_line_mode">True</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                       <attribute name="foreground" value="#e5eeea8d230a"/>
@@ -280,10 +223,38 @@
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
                     <child>
-                      <object class="GtkImage" id="image8">
+                      <object class="GtkVBox" id="vbox7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-about</property>
+                        <child>
+                          <object class="GtkLabel" id="lbl_rating">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">0</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                              <attribute name="foreground" value="#08a0f92402ac"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage" id="image8">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="stock">gtk-about</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                     </child>
                   </object>
@@ -342,10 +313,38 @@
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
                     <child>
-                      <object class="GtkImage" id="image10">
+                      <object class="GtkVBox" id="vbox6">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-refresh</property>
+                        <child>
+                          <object class="GtkLabel" id="lbl_queue_length">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">0(0)</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                              <attribute name="foreground" value="#12c3f7e107c7"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage" id="image6">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="stock">gtk-refresh</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                     </child>
                   </object>
@@ -425,10 +424,39 @@
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
                     <child>
-                      <object class="GtkImage" id="image4">
+                      <object class="GtkVBox" id="vbox4">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-media-play</property>
+                        <child>
+                          <object class="GtkLabel" id="lbl_time">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="xalign">0</property>
+                            <property name="label">0:00/0:00</property>
+                            <property name="single_line_mode">True</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                              <attribute name="foreground" value="#1370f8080c60"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage" id="image4">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="stock">gtk-media-play</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                     </child>
                   </object>
@@ -476,10 +504,39 @@
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
                     <child>
-                      <object class="GtkImage" id="image1">
+                      <object class="GtkVBox" id="vbox5">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-go-up</property>
+                        <child>
+                          <object class="GtkLabel" id="lbl_volume">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">0</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                              <attribute name="foreground" value="#14f2f5921982"/>
+                              <attribute name="scale" value="1"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage" id="image1">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="stock">gtk-go-up</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                     </child>
                   </object>

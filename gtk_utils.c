@@ -312,9 +312,6 @@ void gtk_poll(void)
 
         ui_song_rating_update(mpd_db_get_current_song_rating());
 
-        /*
-         * notification
-         */
         if (title && artist) {
             /*
              * update DB with increased num played
@@ -322,7 +319,7 @@ void gtk_poll(void)
             int np, rating;
             np = db_listen_song(title, artist, album);
             rating = mpd_db_get_current_song_rating();
-            notify_init (title);
+/*            notify_init (title);
             if (album)
                 artist= g_strdup_printf("%i %i\n%s\n%s", rating, np, artist, album);
             else
@@ -330,7 +327,7 @@ void gtk_poll(void)
             gtk.TrackNotify = notify_notification_new (title, artist, artist_art);
             notify_notification_show (gtk.TrackNotify, NULL);
             g_object_unref(G_OBJECT(gtk.TrackNotify));
-            notify_uninit();
+            notify_uninit();*/
         }
 
         gtk.song_id = mpd.song_id;

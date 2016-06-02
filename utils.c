@@ -55,7 +55,7 @@ void get_random_song(char *str, char *path)
         const struct mpd_song *song;
         if (mpd_entity_get_type(entity) == MPD_ENTITY_TYPE_SONG)
         {
-            if (skipnum-- > 0)
+            if ((skipnum-- > 0) || Done)
                 continue;
 
             int listened, whenplayed;
@@ -73,7 +73,7 @@ void get_random_song(char *str, char *path)
                             mpd_get_artist(song));
 //                syslog(LOG_DEBUG, "probability: %i ", probability);
                 bool Yes = (rand() % 100) < probability;
-                if (Yes && !Done) {
+                if (Yes) {
                     sprintf(str, "%s", mpd_song_get_uri(song));
                     syslog(LOG_DEBUG, "%s: probability: %i; uri: %s ", __func__, probability, str);
 //                    syslog(LOG_DEBUG, "title: %s ", mpd_get_title(song));
