@@ -64,7 +64,7 @@ void get_random_song(char *str, char *path)
                     mpd_get_artist(song));
 	    whenplayed = db_get_song_played(mpd_get_title(song),
                     mpd_get_artist(song));
-            syslog(LOG_DEBUG, "%s: played: %d ago", __func__, whenplayed);
+//            syslog(LOG_DEBUG, "%s: played: %d ago", __func__, whenplayed);
             if (listened < listened0) {
                 listened0 = listened;
 //                syslog(LOG_DEBUG, "listened: %i ", listened);

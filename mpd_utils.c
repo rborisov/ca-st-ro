@@ -353,7 +353,7 @@ void mpd_put_state(void)
     struct mpd_status *status;
     int len;
     unsigned queue_len;
-    int song_pos, next_song_pos;
+//    int song_pos, next_song_pos;
 
     status = mpd_run_status(mpd.conn);
     
@@ -364,7 +364,7 @@ void mpd_put_state(void)
     }
 
     mpd.song_pos = mpd_status_get_song_pos(status);
-    mpd.next_song_pos = song_pos+1; //TODO: mpd_status_get_next_song_pos(status);
+    mpd.next_song_pos = mpd.song_pos+1; //TODO: mpd_status_get_next_song_pos(status);
     mpd.queue_len = mpd_status_get_queue_length(status);
     mpd.volume = mpd_status_get_volume(status);
     mpd.state = mpd_status_get_state(status);

@@ -130,19 +130,21 @@ int db_get_song_numplayed(char* song, char* artist)
 
 int db_get_song_played(char* song, char* artist)
 {
-/*    struct tm tm, *now;
     time_t rawtime;
+    struct tm *tminfo;
 
-    time(&rawtime);
-    now = localtime(&rawtime);
+    time ( &rawtime );
+    tminfo = localtime ( &rawtime );
 
     convert_str(song);
     convert_str(artist);
     sqlite3_free(sqlchar3);
+    
     sqlchar3 = sql_get_text_field(conn, "SELECT played FROM Songs WHERE "
             "song = '%s' AND artist = '%s'", song, artist);
-    syslog("%s -- %s", sqlchar3, asctime(now));
-    strptime(sqlchar3, "%Y-%m-%d %H:%M:%S", &tm);*/
+    
+   // syslog("%s :: %s", sqlchar3, asctime(tminfo));
+    
     return 0;
 }
 
