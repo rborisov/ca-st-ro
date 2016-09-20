@@ -6,6 +6,7 @@
 
 #include "config.h"
 #include "db_utils.h"
+#include "memory_utils.h"
 #include "mpd_utils.h"
 
 void rm_current_songfile()
@@ -86,41 +87,6 @@ void get_random_song(char *str, char *path)
     }
 }
 
-struct memstruct {
-    char *memory;
-    size_t size;
-};
-struct memstruct albumstr;
-static size_t WriteMemory(void *contents, size_t size, size_t nmemb, void *userp)
-{
-    size_t realsize = size * nmemb;
-    struct memstruct *mem = (struct MemoryStruct *)userp;
-
-    printf("%i %i\n", size, nmemb);
-
-    mem->memory = realloc(mem->memory, realsize + 1);
-    if(mem->memory == NULL) {
-        /* out of memory! */
-        printf("not enough memory (realloc returned NULL)\n");
-        return 0;
-    }
-
-    memcpy(mem->memory, contents, realsize);
-    mem->size = realsize;
-    mem->memory[mem->size] = 0;
-
-    return realsize;
-}
-void init_utils()
-{
-    albumstr.memory = malloc(1);
-    albumstr.size = 0;
-}
-void clean_utils()
-{
-    free(albumstr.memory);
-}
-
 char* get_current_album()
 {
     const struct mpd_song *song;
@@ -138,7 +104,7 @@ char* get_current_album()
             printf("%s: no MPD_TAG_ALBUM\n", __func__);
         }
         if (str) {
-            WriteMemory(str, 1, strlen(str), (void *)&albumstr);
+            memory_write(str, 1, strlen(str), (void *)&albumstr);
             str = albumstr.memory;
             printf("%s: %s\n", __func__, albumstr.memory);
         }

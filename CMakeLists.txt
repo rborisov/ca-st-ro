@@ -39,6 +39,7 @@ set(SOURCES
     sql.c
     db_utils.c
     utils.c
+    memory_utils.c
 )
 
 add_executable(player ${SOURCES})

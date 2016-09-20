@@ -8,6 +8,7 @@
 #include "mpd_utils.h"
 #include "db_utils.h"
 #include "utils.h"
+#include "memory_utils.h"
 
 GtkBuilder  *xml = NULL;
 
@@ -168,7 +169,7 @@ void gtk_app_init(void)
     GError* error = NULL;
     gchar *path;
 
-    init_utils();
+    memory_init();
 
     gdk_color_parse("black", &color);
 
@@ -263,9 +264,9 @@ void gtk_poll(void)
 
     if (mpd.song_id != gtk.song_id) {
         gtk_win_bg(NULL); //clean win bg
-	gtk_setlabel("lbl_track", "");
-	gtk_setlabel("lbl_artist", "");
-	gtk_setlabel("lbl_album", "");
+        gtk_setlabel("lbl_track", "");
+        gtk_setlabel("lbl_artist", "");
+        gtk_setlabel("lbl_album", "");
         /*
          * track artist album
          */
