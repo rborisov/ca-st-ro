@@ -1,0 +1,1 @@
+curl http://ws.audioscrobbler.com/2.0/ --data 'method=track.getInfo&api_key=ecb4076a85c81aae38a7e8f11e42a0b1&artist=radiohead&track=nude&format=json' -o file
