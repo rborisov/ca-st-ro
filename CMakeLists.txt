@@ -15,7 +15,7 @@ find_package(Sqlite3 REQUIRED)
 find_package(Libnotify REQUIRED)
 #find_package(LibStreamripper REQUIRED)
 
-include_directories(${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}
+include_directories(${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/external
     ${GTK2_INCLUDE_DIRS} ${LIBMPDCLIENT_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIRS}
     ${LIBNOTIFY_INCLUDE_DIRS} )
 #${LIBSTREAMRIPPER_INCLUDE_DIRS})
@@ -40,11 +40,12 @@ set(SOURCES
     db_utils.c
     utils.c
     memory_utils.c
+    external/json.c
 )
 
 add_executable(player ${SOURCES})
 target_link_libraries(player ${CMAKE_THREAD_LIBS_INIT} ${GTK2_LIBRARIES} 
-    ${LIBMPDCLIENT_LIBRARIES} ${SQLITE3_LIBRARIES} ${LIBNOTIFY_LIBRARIES})
+    ${LIBMPDCLIENT_LIBRARIES} ${SQLITE3_LIBRARIES} ${LIBNOTIFY_LIBRARIES} -lm)
 #    ${LIBSTREAMRIPPER_LIBRARIES})
     #    ${GTK2_GLADE_LIBRARY} ${LIBMPDCLIENT_LIBRARIES})
 
