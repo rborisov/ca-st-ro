@@ -1,4 +1,6 @@
-http://curl.haxx.se/libcurl/c/http-post.html
+/*
+ * http://curl.haxx.se/libcurl/c/http-post.html
+ */
 
 /***************************************************************************
  *                                  _   _ ____  _
@@ -42,9 +44,17 @@ int main(void)
     /* First set the URL that is about to receive our POST. This URL can
        just as well be a https:// URL if that is what should receive the
        data. */ 
-    curl_easy_setopt(curl, CURLOPT_URL, "http://postit.example.com/moo.cgi");
+    curl_easy_setopt(curl, CURLOPT_URL, "http://ws.audioscrobbler.com/2.0");
+    //"http://postit.example.com/moo.cgi");
     /* Now specify the POST data */ 
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "name=daniel&project=curl");
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, 
+            "method=artist.getinfo\
+            &artist=radiohead\
+            &autocorrect=1\
+            &api_key=ecb4076a85c81aae38a7e8f11e42a0b1\
+            &format=json\
+            &callback=");
+    //"name=daniel&project=curl");
  
     /* Perform the request, res will get the return code */ 
     res = curl_easy_perform(curl);
