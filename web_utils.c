@@ -1,4 +1,14 @@
 #include <curl/curl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <string.h>
+#include <syslog.h>
+#include <unistd.h>
+
+#define MAXPATH 128
+
+char outdir[MAXPATH];
+char outfn[MAXPATH];
 
 char* download_file(char* url, char* artist)
 {
@@ -26,7 +36,6 @@ char* download_file(char* url, char* artist)
             fclose(fp);
             if (res != 0) {
                 syslog(LOG_DEBUG, "%s error!\n", __func__);
-                outdir = NULL;
                 goto done;
             }
         }
