@@ -49,3 +49,20 @@ done:
     return outdir;
 }
 
+/*
+ * $.get("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" +
+ *           artist +
+ *           "&autocorrect=1&api_key=ecb4076a85c81aae38a7e8f11e42a0b1&format=json&callback="
+ *
+ * return: art_url = lastfm.artist.image[2]['#text']
+ *
+ * $.get("http://ws.audioscrobbler.com/2.0/?method=track.getinfo&artist=" +
+ *       artist + "&track=" + title +
+ *       "&autocorrect=1&api_key=ecb4076a85c81aae38a7e8f11e42a0b1&format=json&callback="
+ *
+ * return: art_url = lastfm.track.album.image[2]['#text']
+ *         lastfm.track.album.title
+ */
+
+
+
