@@ -5,6 +5,8 @@
 #include <syslog.h>
 #include <unistd.h>
 
+#include "json.h"
+
 #define MAXPATH 128
 
 char outdir[MAXPATH];
