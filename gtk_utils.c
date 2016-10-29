@@ -285,12 +285,13 @@ void gtk_poll(void)
        
             //impossible to have album without artist
             album = get_current_album();
-            label2 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_album"));
             if (album) {
                 printf("%s\n", album);
+                label2 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_album"));
                 gtk_label_set (GTK_LABEL (label2), album);
                 album_art = db_get_album_art(artist, album);
             } else {
+                //TODO: start download thread
                 gtk_label_set (GTK_LABEL (label2), "");
             }
             /*
