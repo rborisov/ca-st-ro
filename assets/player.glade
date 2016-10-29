@@ -248,7 +248,7 @@
                           <object class="GtkImage" id="image8">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="stock">gtk-about</property>
+                            <property name="pixbuf">castro-rat-inc.svg</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -338,7 +338,7 @@
                           <object class="GtkImage" id="image6">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="stock">gtk-refresh</property>
+                            <property name="pixbuf">castro-reset-queue.svg</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -376,7 +376,7 @@
                       <object class="GtkImage" id="image11">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="icon_name">gnome-fs-bookmark-missing</property>
+                        <property name="pixbuf">castro-rat-dec.svg</property>
                       </object>
                     </child>
                   </object>
@@ -408,7 +408,7 @@
                       <object class="GtkImage" id="image3">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-media-previous</property>
+                        <property name="pixbuf">castro-prev.svg</property>
                       </object>
                     </child>
                   </object>
@@ -450,7 +450,7 @@
                           <object class="GtkImage" id="image4">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="stock">gtk-media-play</property>
+                            <property name="pixbuf">castro-play.svg</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -477,7 +477,7 @@
                       <object class="GtkImage" id="image5">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-media-next</property>
+                        <property name="pixbuf">castro-fwd.svg</property>
                       </object>
                     </child>
                   </object>
@@ -530,7 +530,7 @@
                           <object class="GtkImage" id="image1">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="stock">gtk-go-up</property>
+                            <property name="pixbuf">castro-vol-plus.svg</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -557,7 +557,7 @@
                       <object class="GtkImage" id="image7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-go-down</property>
+                        <property name="pixbuf">castro-vol-minus.svg</property>
                       </object>
                     </child>
                   </object>

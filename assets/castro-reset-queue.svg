@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   id="svg3352"
+   version="1.1"
+   inkscape:version="0.91 r"
+   viewBox="0 0 64 64"
+   sodipodi:docname="castro-reset-queue.svg">
+  <defs
+     id="defs3354">
+    <linearGradient
+       id="linearGradient4266"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop4268" />
+    </linearGradient>
+    <symbol
+       id="ForwardAndRightArrow_Inv">
+      <title
+         id="title9267">Forward and Right Arrow</title>
+      <rect
+         x="0.5"
+         y="0.5"
+         width="71"
+         height="71"
+         ry="6"
+         style="stroke:white"
+         id="rect9269" />
+      <path
+         d="M 56,16 56,48 45,59 45,35 22,58 14,50 37,27 13,27 24,16 z"
+         style="fill:white;stroke:none"
+         id="path9271" />
+    </symbol>
+    <symbol
+       id="Recycling">
+      <title
+         id="title7007">Recycling</title>
+      <g
+         style="stroke:none"
+         id="g7009">
+        <path
+           d="m 55.5,14.75 -5.25,3 -3.5,-6 c -0.5,-0.875 -1.5,-1.5 -2.875,-1.5 l -10.5,0 c 0.75,0.75 0.875,1 1.25,1.625 l 6.5,11.25 -5.25,3 13,0 z"
+           id="path7011" />
+        <path
+           d="m 53.875,45.5 5.25,0 c 3.125,0 5,-3.375 3.5,-6 l -6.625,-11.6 -9,5.25 z"
+           id="path7013" />
+        <path
+           d="m 46,64.5 0,-6 7,0 c 1,0 2,-0.5 2.75,-1.75 l 5.25,-9 c -1,0.25 -1.375,0.25 -2,0.25 l -13,0 0,-6 -6.5,11.25 z"
+           id="path7015" />
+        <path
+           d="m 20.25,48 -2.625,4.5 c -1.5,2.75 0.375,6 3.375,6 l 13.25,0 0,-10.5 z"
+           id="path7017" />
+        <path
+           d="m 7.75,31.75 5.25,3 -3.5,6 c -0.5,0.875 -0.5,2 0.125,3.25 l 5.125,9 c 0.25,-1 0.375,-1.25 0.75,-1.875 l 6.5,-11.25 5.25,3 -6.5,-11.25 z"
+           id="path7019" />
+        <path
+           d="m 35,17.5 -2.5,-4.5 c -1.625,-2.625 -5.375,-2.625 -6.875,0 l -6.625,11.5 9,5.25 z"
+           id="path7021" />
+      </g>
+    </symbol>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="9.7190413"
+     inkscape:cx="32"
+     inkscape:cy="32"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="1215"
+     inkscape:window-height="776"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:snap-text-baseline="false" />
+  <metadata
+     id="metadata3357">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <ellipse
+       style="fill:#00ff00;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path4181"
+       cx="32"
+       cy="32"
+       rx="30.227362"
+       ry="30.22736"
+       transform="matrix(0,1,1,0,0,0)" />
+    <use
+       id="use18768"
+       style="fill:#ff6600;stroke:#000000;stroke-width:2.74112837;image-rendering:auto;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       xlink:href="#Recycling"
+       x="0"
+       y="0"
+       width="100%"
+       height="100%"
+       transform="matrix(0.72200631,0,0,0.73732719,6.3168224,4.3659988)" />
+  </g>
+</svg>

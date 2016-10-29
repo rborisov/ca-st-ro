@@ -40,6 +40,7 @@ set(SOURCES
     db_utils.c
     utils.c
     memory_utils.c
+    socket_utils.c 
 )
 
 add_executable(player ${SOURCES})
