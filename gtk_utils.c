@@ -234,6 +234,8 @@ void gtk_app_init(void)
     gtk.queue_version = 0;
 
     gtk.conn_state = -555;
+
+    gtk.state = -555;
 cleanup:
     return;
 }
@@ -260,6 +262,19 @@ void gtk_poll(void)
         //change background image while mpd disconnected
 
         gtk.conn_state = mpd.conn_state;
+    }
+
+    if (mpd.state != gtk.state) {
+        //mpd.state changed
+        switch (mpd.state) {
+            case MPD_STATE_PAUSE:
+            case MPD_STATE_STOP:
+                printf("%s MPD_STATE_PAUSE\n", __func__);
+                break;
+            case MPD_STATE_PLAY:
+                printf("%s MPD_STATE_PLAY\n", __func__);
+        }
+        gtk.state = mpd.state;
     }
 
     if (mpd.song_id != gtk.song_id) {

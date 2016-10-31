@@ -4,6 +4,7 @@
 #include <libintl.h>
 #include <libnotify/notify.h>
 #include "config.h"
+#include <mpd/client.h>
 
 #define UI_FILE "player.glade"
 #define APPNAME "player"
@@ -19,6 +20,7 @@ struct t_gtk {
     unsigned queue_version;
     int conn_state;
     char bg_file[128];
+    enum mpd_state state;
 } gtk;
 
 void gtk_poll(void);
