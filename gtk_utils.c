@@ -271,9 +271,9 @@ void gtk_poll(void)
         //TODO: move names to define
         gchar *path = g_strdup_printf ("%s/castro-play.svg", PREFIX);
         gchar *path1 = g_strdup_printf ("%s/castro-pause.svg", PREFIX);
-        GdkPixbuf *pixbuf_play = gdk_pixbuf_new_from_file(path, &error);
+        GdkPixbuf *pixbuf_pause, *pixbuf_play = gdk_pixbuf_new_from_file(path, &error);
         if (error == NULL)
-            GdkPixbuf *pixbuf_pause = gdk_pixbuf_new_from_file(path1, &error);
+            pixbuf_pause = gdk_pixbuf_new_from_file(path1, &error);
         if (error != NULL) {
             if (error->domain == GDK_PIXBUF_ERROR) {
                 g_print ("Pixbuf Related Error:\n");
