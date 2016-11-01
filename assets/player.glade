@@ -447,7 +447,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkImage" id="image4">
+                          <object class="GtkImage" id="playpause">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="pixbuf">castro-play.svg</property>

@@ -265,13 +265,37 @@ void gtk_poll(void)
     }
 
     if (mpd.state != gtk.state) {
+        GError* error = NULL;
+        GtkWidget *widget = GTK_WIDGET(gtk_builder_get_object (xml, "playpause"));
+        GtkImage *image4 = GTK_IMAGE(widget);
+        //TODO: move names to define
+        gchar *path = g_strdup_printf ("%s/castro-play.svg", PREFIX);
+        gchar *path1 = g_strdup_printf ("%s/castro-pause.svg", PREFIX);
+        GdkPixbuf *pixbuf_play = gdk_pixbuf_new_from_file(path, &error);
+        if (error == NULL)
+            GdkPixbuf *pixbuf_pause = gdk_pixbuf_new_from_file(path1, &error);
+        if (error != NULL) {
+            if (error->domain == GDK_PIXBUF_ERROR) {
+                g_print ("Pixbuf Related Error:\n");
+            }
+            if (error->domain == G_FILE_ERROR) {
+                g_print ("File Error: Check file permissions and state:\n");
+            }
+            g_printerr ("%s\n", error[0].message);
+        }
+        g_free(path);
+        g_free(path1);
         //mpd.state changed
         switch (mpd.state) {
             case MPD_STATE_PAUSE:
             case MPD_STATE_STOP:
-                printf("%s MPD_STATE_PAUSE\n", __func__);
+                if (error == NULL)
+                    gtk_image_set_from_pixbuf(image4, pixbuf_play);
+                printf("%s MPD_STATE_PAUSE or STOP\n", __func__);
                 break;
             case MPD_STATE_PLAY:
+                if (error == NULL)
+                    gtk_image_set_from_pixbuf(image4, pixbuf_pause);
                 printf("%s MPD_STATE_PLAY\n", __func__);
         }
         gtk.state = mpd.state;
