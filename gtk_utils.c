@@ -8,7 +8,7 @@
 #include "mpd_utils.h"
 #include "db_utils.h"
 #include "utils.h"
-#include "memory_utils.h"
+//#include "memory_utils.h"
 
 GtkBuilder  *xml = NULL;
 
@@ -169,7 +169,7 @@ void gtk_app_init(void)
     GError* error = NULL;
     gchar *path;
 
-    memory_init();
+    //memory_init();
 
     gdk_color_parse("black", &color);
 

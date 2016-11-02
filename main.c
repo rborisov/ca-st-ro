@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <libintl.h>
 
+#include "config.h"
 #include "utils.h"
 #include "db_utils.h"
 #include "gtk_utils.h"
@@ -25,13 +26,7 @@ static void player_idle(gpointer data)
     gtk_poll();
     g_main_context_wakeup(NULL);
 }
-/*
-static void mntsrv_idle(gpointer data)
-{
-    mntsrv_poll();
-    g_main_context_wakeup(NULL);
-}
-*/
+
 int main (int argc, char *argv[])
 {
     gchar *path;
@@ -53,7 +48,7 @@ int main (int argc, char *argv[])
             case 'v':
                 printf ("%s %s\n%s\n", g_ascii_strdown(APPNAME,strlen(APPNAME)),
                         VERSION,
-                        "Copyright 2015 Roman Borisov");
+                        "Copyright 2016 Roman Borisov");
                 goto cleanup;
                 break;
             case 'h':
@@ -72,21 +67,20 @@ int main (int argc, char *argv[])
 //    gtk_window_fullscreen(GDK_WINDOW(gtk.main_window));
     gtk_widget_show (gtk.main_window);
 
+    utils_init();
     db_init();
 
     gdk_threads_enter ();
 	hndl_id0 = g_idle_add((GtkFunction)mpd_idle, NULL);
     hndl_id1 = g_idle_add((GtkFunction)player_idle, NULL);
-//    if (mntsrv_init() == 0)
-//        hndl_id2 = g_idle_add((GtkFunction)mntsrv_idle, NULL);
+
     gtk_main ();
     gtk_idle_remove(hndl_id0);
     gtk_idle_remove(hndl_id1);
-//    gtk_idle_remove(hndl_id2);
-//    mntsrv_close();
     gdk_threads_leave ();
 
     db_close();
+    utils_close();
 cleanup:
     
 

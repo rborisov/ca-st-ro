@@ -9,6 +9,17 @@
 #include "memory_utils.h"
 #include "mpd_utils.h"
 
+struct memstruct albumstr;
+
+void utils_init()
+{
+    memory_init((void *)&albumstr);
+}
+void utils_close()
+{
+    memory_clean((void *)&albumstr);
+}
+
 void rm_current_songfile()
 {
     struct mpd_song *song = NULL;
@@ -63,23 +74,23 @@ void get_random_song(char *str, char *path)
             song = mpd_entity_get_song(entity);
             listened = db_get_song_numplayed(mpd_get_title(song),
                     mpd_get_artist(song));
-	    whenplayed = db_get_song_played(mpd_get_title(song),
+            whenplayed = db_get_song_played(mpd_get_title(song),
                     mpd_get_artist(song));
-//            syslog(LOG_DEBUG, "%s: played: %d ago", __func__, whenplayed);
+            //            syslog(LOG_DEBUG, "%s: played: %d ago", __func__, whenplayed);
             if (listened < listened0) {
                 listened0 = listened;
-//                syslog(LOG_DEBUG, "listened: %i ", listened);
+                //                syslog(LOG_DEBUG, "listened: %i ", listened);
                 int probability = 50 - listened +
                     db_get_song_rating(mpd_get_title(song),
                             mpd_get_artist(song));
-//                syslog(LOG_DEBUG, "probability: %i ", probability);
+                //                syslog(LOG_DEBUG, "probability: %i ", probability);
                 bool Yes = (rand() % 100) < probability;
                 if (Yes) {
                     sprintf(str, "%s", mpd_song_get_uri(song));
                     syslog(LOG_DEBUG, "%s: probability: %i; uri: %s ", __func__, probability, str);
-//                    syslog(LOG_DEBUG, "title: %s ", mpd_get_title(song));
-//                    syslog(LOG_DEBUG, "artist: %s", mpd_get_artist(song));
-		    Done = true;
+                    //                    syslog(LOG_DEBUG, "title: %s ", mpd_get_title(song));
+                    //                    syslog(LOG_DEBUG, "artist: %s", mpd_get_artist(song));
+                    Done = true;
                 }
             }
         }
@@ -185,9 +196,9 @@ void mpd_poll()
                 syslog(LOG_DEBUG, "%s: queue is empty %i(%i)\n", __func__, mpd.song_pos, mpd.queue_len);
                 get_random_song(str, "");
                 if (strlen(str) > 5)
-                if (!mpd_run_add(mpd.conn, str)) {
-                    syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(mpd.conn));
-                }
+                    if (!mpd_run_add(mpd.conn, str)) {
+                        syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(mpd.conn));
+                    }
             }
 
             break;

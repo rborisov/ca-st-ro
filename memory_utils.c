@@ -23,14 +23,16 @@ size_t memory_write(void *contents, size_t size, size_t nmemb, void *userp)
     return realsize;
 }
 
-void memory_init()
+void memory_init(void *userp)
 {
-    albumstr.memory = malloc(1);
+    struct memstruct *mem = (struct MemoryStruct *)userp;
+    mem->memory = malloc(1);
     albumstr.size = 0;
 }
 
-void memory_clean()
+void memory_clean(void *userp)
 {
-    free(albumstr.memory);
+    struct memstruct *mem = (struct MemoryStruct *)userp;
+    free(mem->memory);
 }
 

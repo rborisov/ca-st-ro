@@ -3,6 +3,8 @@
 
 #include "mpd_utils.h"
 
+void utils_init();
+void utils_close();
 void get_random_song(char *, char *);
 void mpd_poll();
 char* get_current_album();

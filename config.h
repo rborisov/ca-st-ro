@@ -1,6 +1,7 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
+#define FSBYTESAVAIL 52428800
 #define WORKPATH "/storage/ca-st-ro"
 #define PREFIX "/storage/ca-st-ro/assets"
 #define MUSICPATH "/storage/Music"

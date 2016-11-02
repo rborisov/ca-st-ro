@@ -10,8 +10,8 @@ struct memstruct {
 
 struct memstruct albumstr;
 
-void memory_init();
-void memory_clean();
+void memory_init(void *userp);
+void memory_clean(void *userp);
 size_t memory_write(void *contents, size_t size, size_t nmemb, void *userp);
 
 #endif //__MEMORY_UTILS_H__

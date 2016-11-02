@@ -5,26 +5,28 @@
 #include <syslog.h>
 
 #include "mpd_utils.h"
+#include "config.h"
 
 char nullstr[1] = "";
 char titlebuf[128] = "";
 char artistbuf[128] = "";
 char albumbuf[128] = "";
 /*
-char* mpd_get_config_music_directory()
-{
-    char *music_directory = NULL;
-    if (mpd_send_command(mpd.conn, "config", NULL))
-    {
-	    struct mpd_pair *pair = mpd_recv_pair_named(mpd.conn, "music_directory");
-	    if (pair != NULL) {
-		    music_directory = strdup(pair->value);
-		    mpd_return_pair(conn, pair);
-	    }
-    }
-    return music_directory;
-}
-*/
+   char* mpd_get_config_music_directory()
+   {
+   char *music_directory = NULL;
+   if (mpd_send_command(mpd.conn, "config", NULL))
+   {
+   struct mpd_pair *pair = mpd_recv_pair_named(mpd.conn, "music_directory");
+   if (pair != NULL) {
+   music_directory = strdup(pair->value);
+   mpd_return_pair(conn, pair);
+   }
+   }
+   return music_directory;
+   }
+   */
+
 int mpd_crop()
 {
     struct mpd_status *status = mpd_run_status(mpd.conn);
@@ -101,7 +103,7 @@ char* mpd_get_current_title()
         sprintf(titlebuf, "%s", mpd_get_title(song));
         mpd_song_free(song);
     }
-    
+
     return titlebuf;
 }
 
@@ -125,7 +127,7 @@ char* mpd_get_current_artist()
 char* mpd_get_current_album()
 {
     struct mpd_song *song;
-    
+
     if (mpd.conn_state == MPD_CONNECTED) {
         song = mpd_run_current_song(mpd.conn);
         if(song == NULL) {
@@ -353,10 +355,10 @@ void mpd_put_state(void)
     struct mpd_status *status;
     int len;
     unsigned queue_len;
-//    int song_pos, next_song_pos;
+    //    int song_pos, next_song_pos;
 
     status = mpd_run_status(mpd.conn);
-    
+
     if (!status) {
         syslog(LOG_ERR, "%s mpd_run_status: %s\n", __func__, mpd_connection_get_error_message(mpd.conn));
         mpd.conn_state = MPD_FAILURE;
@@ -376,14 +378,14 @@ void mpd_put_state(void)
     mpd.total_time = mpd_status_get_total_time(status);
     mpd.song_id = mpd_status_get_song_id(status);
 
-//    printf("%d\n", mpd.song_id);
+    //    printf("%d\n", mpd.song_id);
 
     mpd_status_free(status);
 }
 #if 0
 void mpd_poll()
 {
-//    printf("%d\n", mpd.conn_state);
+    //    printf("%d\n", mpd.conn_state);
     switch (mpd.conn_state) {
         case MPD_DISCONNECTED:
             syslog(LOG_INFO, "%s - MPD Connecting...\n", __func__);
@@ -415,14 +417,14 @@ void mpd_poll()
         case MPD_CONNECTED:
             mpd_put_state();
             //TODO: display status
-/*            if (queue_is_empty) {
-                queue_is_empty = 0;
-                get_random_song(mpd.conn, str, rcm.file_path);
-                if (strcmp(str, "") != 0) {
-                    syslog(LOG_DEBUG, "%s: add random song %s\n", __func__, str);
-                    mpd_run_add(mpd.conn, str);
-                }
-            }*/
+            /*            if (queue_is_empty) {
+                          queue_is_empty = 0;
+                          get_random_song(mpd.conn, str, rcm.file_path);
+                          if (strcmp(str, "") != 0) {
+                          syslog(LOG_DEBUG, "%s: add random song %s\n", __func__, str);
+                          mpd_run_add(mpd.conn, str);
+                          }
+                          }*/
             break;
         default:
             syslog(LOG_INFO, "%s - mpd.conn_state %i\n", __func__, mpd.conn_state);
