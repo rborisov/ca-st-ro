@@ -361,12 +361,11 @@ void mpd_change_volume(int val)
 
 void mpd_put_state(void)
 {
-    struct mpd_status *status;
     int len;
     unsigned queue_len;
     //    int song_pos, next_song_pos;
     pthread_mutex_lock(&mpd.mutex_status);
-    status = mpd_run_status(mpd.conn);
+    struct mpd_status *status = mpd_run_status(mpd.conn);
 
     if (!status) {
         syslog(LOG_ERR, "%s mpd_run_status: %s\n", __func__, mpd_connection_get_error_message(mpd.conn));
