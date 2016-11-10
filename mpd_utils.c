@@ -29,39 +29,41 @@ char albumbuf[128] = "";
 
 int mpd_crop()
 {
+    int res = 1;
+    pthread_mutex_lock(&mpd.mutex_status);
     struct mpd_status *status = mpd_run_status(mpd.conn);
-    if (status == 0)
-        return 0;
+    if (status == 0) {
+        res = 0;
+        goto ERROR;
+    }
     int length = mpd_status_get_queue_length(status) - 1;
 
     if (length < 0) {
-        mpd_status_free(status);
         syslog(LOG_INFO, "%s: A playlist longer than 1 song in length is required to crop.\n", __func__);
     } else if (mpd_status_get_state(status) == MPD_STATE_PLAY ||
             mpd_status_get_state(status) == MPD_STATE_PAUSE) {
         if (!mpd_command_list_begin(mpd.conn, false)) {
             syslog(LOG_ERR, "%s: mpd_command_list_begin failed\n", __func__);
-            return 0;
+            res = 0;
+            goto DONE;
         }
 
         for (; length >= 0; --length)
             if (length != mpd_status_get_song_pos(status))
                 mpd_send_delete(mpd.conn, length);
 
-        mpd_status_free(status);
-
         if (!mpd_command_list_end(mpd.conn) || !mpd_response_finish(mpd.conn)) {
             syslog(LOG_ERR, "%s: mpd_command_list_end || mpd_response_finish failed\n", __func__);
-            return 0;
         }
-
-        return 0;
+        res = 0;
     } else {
-        mpd_status_free(status);
         syslog(LOG_INFO, "%s: You need to be playing to crop the playlist\n", __func__);
-        return 0;
     }
-    return 1;
+DONE:
+    mpd_status_free(status);
+ERROR:
+    pthread_mutex_unlock(&mpd.mutex_status);
+    return res;
 }
 
 int mpd_list_artists()
@@ -180,34 +182,41 @@ char* mpd_get_title(struct mpd_song const *song)
 
 unsigned mpd_get_queue_length()
 {
+    pthread_mutex_lock(&mpd.mutex_status);
     struct mpd_status *status = mpd_run_status(mpd.conn);
     if (status == NULL)
         return 0;
     const unsigned length = mpd_status_get_queue_length(status);
     mpd_status_free(status);
+    pthread_mutex_unlock(&mpd.mutex_status);
     return length;
 }
 
 int mpd_insert (char *song_path )
 {
+    int res = 0;
+    pthread_mutex_lock(&mpd.mutex_status);
     struct mpd_status *status = mpd_run_status(mpd.conn);
     if (status == NULL)
-        return 0;
+        goto ERROR;
     const unsigned from = mpd_status_get_queue_length(status);
     const int cur_pos = mpd_status_get_song_pos(status);
     mpd_status_free(status);
 
     if (mpd_run_add(mpd.conn, song_path) != true)
-        return 0;
+        goto ERROR;
 
     /* check the new queue length to find out how many songs were
      *        appended  */
     const unsigned end = mpd_get_queue_length();
     if (end == from)
-        return 0;
+        goto ERROR;
 
     /* move those songs to right after the current one */
-    return mpd_run_move_range(mpd.conn, from, end, cur_pos + 1);
+    res = mpd_run_move_range(mpd.conn, from, end, cur_pos + 1);
+ERROR:
+    pthread_mutex_unlock(&mpd.mutex_status);
+    return res;
 }
 #if 0
 void get_random_song(struct mpd_connection *conn, char *str, char *path)
@@ -356,13 +365,13 @@ void mpd_put_state(void)
     int len;
     unsigned queue_len;
     //    int song_pos, next_song_pos;
-
+    pthread_mutex_lock(&mpd.mutex_status);
     status = mpd_run_status(mpd.conn);
 
     if (!status) {
         syslog(LOG_ERR, "%s mpd_run_status: %s\n", __func__, mpd_connection_get_error_message(mpd.conn));
         mpd.conn_state = MPD_FAILURE;
-        return;
+        goto ERROR;
     }
 
     mpd.song_pos = mpd_status_get_song_pos(status);
@@ -381,6 +390,8 @@ void mpd_put_state(void)
     //    printf("%d\n", mpd.song_id);
 
     mpd_status_free(status);
+ERROR:
+    pthread_mutex_unlock(&mpd.mutex_status);
 }
 #if 0
 void mpd_poll()

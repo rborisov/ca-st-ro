@@ -1,3 +1,4 @@
+#include <pthread.h>
 #include <syslog.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -10,14 +11,25 @@
 #include "mpd_utils.h"
 
 struct memstruct albumstr;
+struct memstruct rndstr;
+pthread_t rnd_thread;
+bool rnd_complete = true;
 
 void utils_init()
 {
+    if (pthread_mutex_init(&mpd.mutex_status, NULL) != 0)
+    {
+        syslog(LOG_ERR, "%s: mutex init failed", __func__);
+    }
     memory_init((void *)&albumstr);
+    memory_init((void *)&rndstr);
 }
 void utils_close()
 {
     memory_clean((void *)&albumstr);
+    memory_init((void *)&rndstr);
+    pthread_join(rnd_thread, NULL);
+    pthread_mutex_destroy(&mpd.mutex_status);
 }
 
 void rm_current_songfile()
@@ -40,16 +52,22 @@ void rm_current_songfile()
     return;
 }
 
-void get_random_song(char *str, char *path)
+void get_random_song(char *path)
+//void get_random_song(char *str, char *path)
 {
     struct mpd_entity *entity;
     int listened0 = 65000,
         skipnum, numberofsongs = 0;
     bool Done = false;
+    char *str = NULL;
+
+    rnd_complete = false;
+
+    pthread_mutex_lock(&mpd.mutex_status);
 
     struct mpd_stats *stats = mpd_run_stats(mpd.conn);
     if (stats == NULL)
-        return;
+        goto DONE;
     numberofsongs = mpd_stats_get_number_of_songs(stats);
     mpd_stats_free(stats);
     skipnum = rand() % numberofsongs;
@@ -59,7 +77,7 @@ void get_random_song(char *str, char *path)
     if (!mpd_send_list_all_meta(mpd.conn, ""))//path))
     {
         syslog(LOG_ERR, "%s: error: mpd_send_list_meta %s\n", __func__, path);
-        return;
+        goto DONE;
     }
 
     while((entity = mpd_recv_entity(mpd.conn)) != NULL)
@@ -86,7 +104,8 @@ void get_random_song(char *str, char *path)
                 //                syslog(LOG_DEBUG, "probability: %i ", probability);
                 bool Yes = (rand() % 100) < probability;
                 if (Yes) {
-                    sprintf(str, "%s", mpd_song_get_uri(song));
+                    //sprintf(str, "%s", mpd_song_get_uri(song));
+                    str = mpd_song_get_uri(song);
                     syslog(LOG_DEBUG, "%s: probability: %i; uri: %s ", __func__, probability, str);
                     //                    syslog(LOG_DEBUG, "title: %s ", mpd_get_title(song));
                     //                    syslog(LOG_DEBUG, "artist: %s", mpd_get_artist(song));
@@ -96,6 +115,15 @@ void get_random_song(char *str, char *path)
         }
         mpd_entity_free(entity);
     }
+DONE:
+    if (Done && strlen(str) > 5) {
+        if (!mpd_run_add(mpd.conn, str)) {
+            syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(mpd.conn));
+        }
+    }
+    pthread_mutex_unlock(&mpd.mutex_status);
+    rnd_complete = true;
+    return;
 }
 
 char* get_current_album()
@@ -194,11 +222,16 @@ void mpd_poll()
             {
                 char str[128] = "";
                 syslog(LOG_DEBUG, "%s: queue is empty %i(%i)\n", __func__, mpd.song_pos, mpd.queue_len);
-                get_random_song(str, "");
+                if (rnd_complete) {
+                    int res = pthread_create(&rnd_thread, NULL, get_random_song, "");
+                    if (res)
+                        syslog(LOG_ERR, "%s: pthread_create returns %d", __func__, res);
+                }
+/*                get_random_song(str, "");
                 if (strlen(str) > 5)
                     if (!mpd_run_add(mpd.conn, str)) {
                         syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(mpd.conn));
-                    }
+                    }*/
             }
 
             break;
