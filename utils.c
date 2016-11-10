@@ -1,3 +1,4 @@
+#include <pthread.h>
 #include <syslog.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -10,6 +11,8 @@
 #include "mpd_utils.h"
 
 struct memstruct albumstr;
+bool rnd_thread_completed = true;
+pthread_t rnd_thread;
 
 void utils_init()
 {
@@ -40,16 +43,21 @@ void rm_current_songfile()
     return;
 }
 
-void get_random_song(char *str, char *path)
+//void get_random_song(char *str, char *path)
+void get_random_song(char *path)
 {
     struct mpd_entity *entity;
     int listened0 = 65000,
         skipnum, numberofsongs = 0;
     bool Done = false;
+    struct mpd_stats *stats = NULL;
+    char str[128] = "";
 
-    struct mpd_stats *stats = mpd_run_stats(mpd.conn);
+    rnd_thread_completed = false;
+
+    stats = mpd_run_stats(mpd.conn);
     if (stats == NULL)
-        return;
+        goto DONE;
     numberofsongs = mpd_stats_get_number_of_songs(stats);
     mpd_stats_free(stats);
     skipnum = rand() % numberofsongs;
@@ -59,7 +67,7 @@ void get_random_song(char *str, char *path)
     if (!mpd_send_list_all_meta(mpd.conn, ""))//path))
     {
         syslog(LOG_ERR, "%s: error: mpd_send_list_meta %s\n", __func__, path);
-        return;
+        goto DONE;
     }
 
     while((entity = mpd_recv_entity(mpd.conn)) != NULL)
@@ -76,26 +84,33 @@ void get_random_song(char *str, char *path)
                     mpd_get_artist(song));
             whenplayed = db_get_song_played(mpd_get_title(song),
                     mpd_get_artist(song));
-            //            syslog(LOG_DEBUG, "%s: played: %d ago", __func__, whenplayed);
+            //syslog(LOG_DEBUG, "%s: played: %d ago", __func__, whenplayed);
             if (listened < listened0) {
                 listened0 = listened;
-                //                syslog(LOG_DEBUG, "listened: %i ", listened);
+                //syslog(LOG_DEBUG, "listened: %i ", listened);
                 int probability = 50 - listened +
                     db_get_song_rating(mpd_get_title(song),
                             mpd_get_artist(song));
-                //                syslog(LOG_DEBUG, "probability: %i ", probability);
+                //syslog(LOG_DEBUG, "probability: %i ", probability);
                 bool Yes = (rand() % 100) < probability;
                 if (Yes) {
-                    sprintf(str, "%s", mpd_song_get_uri(song));
+                    strcpy(str, mpd_song_get_uri(song));
+//                    sprintf(str, "%s", mpd_song_get_uri(song));
                     syslog(LOG_DEBUG, "%s: probability: %i; uri: %s ", __func__, probability, str);
-                    //                    syslog(LOG_DEBUG, "title: %s ", mpd_get_title(song));
-                    //                    syslog(LOG_DEBUG, "artist: %s", mpd_get_artist(song));
+                    //syslog(LOG_DEBUG, "title: %s ", mpd_get_title(song));
+                    //syslog(LOG_DEBUG, "artist: %s", mpd_get_artist(song));
+                    while (!mpd_run_add(mpd.conn, str)) {
+                        syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(mpd.conn));
+                        sleep(5);
+                    }
                     Done = true;
                 }
             }
         }
         mpd_entity_free(entity);
     }
+DONE:
+    rnd_thread_completed = true;
 }
 
 char* get_current_album()
@@ -105,19 +120,19 @@ char* get_current_album()
     if (mpd.conn_state == MPD_CONNECTED) {
         song = mpd_run_current_song(mpd.conn);
         if(song == NULL) {
-            printf("song == NULL\n");
+            syslog(LOG_ERR, "%s: song == NULL\n", __func__);
             return NULL;
         }
         str = (char *)mpd_song_get_tag(song, MPD_TAG_ALBUM, 0);
         if (str == NULL) {
             str = db_get_song_album(mpd_song_get_tag(song, MPD_TAG_TITLE, 0),
                     mpd_song_get_tag(song, MPD_TAG_ARTIST, 0));
-            printf("%s: no MPD_TAG_ALBUM\n", __func__);
+            syslog(LOG_DEBUG, "%s: no MPD_TAG_ALBUM\n", __func__);
         }
         if (str) {
             memory_write(str, 1, strlen(str), (void *)&albumstr);
             str = albumstr.memory;
-            printf("%s: %s\n", __func__, albumstr.memory);
+            syslog(LOG_DEBUG, "%s: %s\n", __func__, albumstr.memory);
         }
 
         mpd_song_free(song);
@@ -194,11 +209,19 @@ void mpd_poll()
             {
                 char str[128] = "";
                 syslog(LOG_DEBUG, "%s: queue is empty %i(%i)\n", __func__, mpd.song_pos, mpd.queue_len);
-                get_random_song(str, "");
+                /*get_random_song(str, "");
                 if (strlen(str) > 5)
                     if (!mpd_run_add(mpd.conn, str)) {
                         syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(mpd.conn));
                     }
+                    */
+                if (rnd_thread_completed) {
+                    int ret = pthread_create(&rnd_thread, NULL, get_random_song, "");
+                    if (ret) {
+                        syslog(LOG_ERR, "%s: pthread_create returns %d\n", __func__, ret);
+                    }
+                } else
+                    syslog(LOG_DEBUG, "%s: rnd_thread is not completed yet\n", __func__);
             }
 
             break;
