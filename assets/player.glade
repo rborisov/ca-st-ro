@@ -142,7 +142,6 @@
           <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="homogeneous">True</property>
             <child>
               <object class="GtkHBox" id="hbox5">
                 <property name="visible">True</property>
@@ -199,7 +198,6 @@
               <object class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkAccelLabel" id="lbl_track">
                     <property name="visible">True</property>
