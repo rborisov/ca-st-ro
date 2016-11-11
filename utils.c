@@ -215,7 +215,6 @@ void mpd_poll()
             mpd_put_state();
             if (mpd.song_pos+1 >= mpd.queue_len)
             {
-                char str[128] = "";
                 syslog(LOG_DEBUG, "%s: queue is empty %i(%i)\n", __func__, mpd.song_pos, mpd.queue_len);
                 if (rnd_completed) {
                     int res = pthread_create(&rndthread, NULL, get_random_song, "");
@@ -223,13 +222,7 @@ void mpd_poll()
                         syslog(LOG_ERR, "%s: pthread_create returns %s", __func__, res);
                     }
                 }
-/*                get_random_song(str, "");
-                if (strlen(str) > 5)
-                    if (!mpd_run_add(mpd.conn, str)) {
-                        syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(mpd.conn));
-                    }*/
             }
-
             break;
         default:
             syslog(LOG_INFO, "%s - mpd.conn_state %i\n", __func__, mpd.conn_state);

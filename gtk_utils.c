@@ -22,6 +22,16 @@ static void ui_song_rating_update(int rating)
     g_free(str);
 }
 
+static void ui_song_np_update(int np)
+{
+    GtkWidget *label = NULL;
+    gchar *str;
+    label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_np"));
+    str = g_strdup_printf ("%d", np);
+    gtk_label_set (GTK_LABEL (label), str);
+    g_free(str);
+}
+
 static void ui_queue_update(int songpos, int queue_length)
 {
     GtkWidget *label = NULL;
@@ -359,7 +369,7 @@ void gtk_poll(void)
              */
             int np, rating;
             np = db_listen_song(title, artist, album);
-            rating = mpd_db_get_current_song_rating();
+            ui_song_np_update(np);
 /*            notify_init (title);
             if (album)
                 artist= g_strdup_printf("%i %i\n%s\n%s", rating, np, artist, album);

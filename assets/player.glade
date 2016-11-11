@@ -17,16 +17,26 @@
         <child>
           <object class="GtkHBox" id="hbox4">
             <property name="visible">True</property>
+            <property name="sensitive">False</property>
             <property name="can_focus">False</property>
+            <property name="spacing">5</property>
+            <property name="homogeneous">True</property>
             <child>
-              <object class="GtkImage" id="image2">
+              <object class="GtkLabel" id="lbl_time">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-media-pause</property>
+                <property name="xalign">1</property>
+                <property name="label">0:00/0:00</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="foreground" value="#1370f8080c60"/>
+                  <attribute name="background" value="#0de106c406c4"/>
+                  <attribute name="scale" value="1.5"/>
+                </attributes>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -34,14 +44,21 @@
               <placeholder/>
             </child>
             <child>
-              <object class="GtkImage" id="image12">
+              <object class="GtkLabel" id="lbl_rating">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-info</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">0</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="foreground" value="#08a0f92402ac"/>
+                  <attribute name="background" value="#0de106c406c4"/>
+                  <attribute name="scale" value="1.5"/>
+                </attributes>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">2</property>
               </packing>
             </child>
@@ -49,38 +66,43 @@
               <placeholder/>
             </child>
             <child>
-              <object class="GtkImage" id="image13">
+              <object class="GtkLabel" id="lbl_np">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-dialog-question</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">0</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="foreground" value="#14f2f5921982"/>
+                  <attribute name="background" value="#0de106c406c4"/>
+                  <attribute name="scale" value="1.5"/>
+                </attributes>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">4</property>
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="image14">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-dialog-question</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">5</property>
-              </packing>
+              <placeholder/>
             </child>
             <child>
-              <object class="GtkImage" id="image15">
+              <object class="GtkLabel" id="lbl_queue_length">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-dialog-question</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">0(0)</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="foreground" value="#12c3f7e107c7"/>
+                  <attribute name="background" value="#0de106c406c4"/>
+                  <attribute name="scale" value="1.5"/>
+                </attributes>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">6</property>
               </packing>
             </child>
@@ -88,24 +110,31 @@
               <placeholder/>
             </child>
             <child>
-              <object class="GtkImage" id="image16">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-dialog-question</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">8</property>
-              </packing>
+              <placeholder/>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel" id="lbl_volume">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">0</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="foreground" value="#14f2f5921982"/>
+                  <attribute name="background" value="#0de106c406c4"/>
+                  <attribute name="scale" value="1.5"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">9</property>
+              </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
+            <property name="fill">False</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -114,15 +143,54 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkImage" id="img_artist">
-                <property name="width_request">100</property>
-                <property name="height_request">100</property>
+              <object class="GtkHBox" id="hbox5">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkImage" id="img_artist">
+                    <property name="width_request">100</property>
+                    <property name="height_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="stock">gtk-missing-image</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkVBox" id="vbox8">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
@@ -136,6 +204,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xalign">0.89999997615814209</property>
+                    <property name="yalign">0</property>
                     <property name="label" translatable="yes">track title</property>
                     <property name="single_line_mode">True</property>
                     <attributes>
@@ -143,7 +212,7 @@
                       <attribute name="foreground" value="#ea8db6ed230a"/>
                       <attribute name="background" value="#21600c0b0c0b"/>
                       <attribute name="underline-color" value="#ea69bd9412a2"/>
-                      <attribute name="scale" value="2"/>
+                      <attribute name="scale" value="3"/>
                     </attributes>
                   </object>
                   <packing>
@@ -157,6 +226,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xalign">0.89999997615814209</property>
+                    <property name="yalign">0</property>
                     <property name="label" translatable="yes">artist</property>
                     <property name="single_line_mode">True</property>
                     <attributes>
@@ -164,7 +234,7 @@
                       <attribute name="foreground" value="#9d40ea8d230a"/>
                       <attribute name="background" value="#21600c0b0c0b"/>
                       <attribute name="underline-color" value="#ea69bd9412a2"/>
-                      <attribute name="scale" value="2"/>
+                      <attribute name="scale" value="3"/>
                     </attributes>
                   </object>
                   <packing>
@@ -178,6 +248,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xalign">0.89999997615814209</property>
+                    <property name="yalign">0</property>
                     <property name="label" translatable="yes">album</property>
                     <property name="single_line_mode">True</property>
                     <attributes>
@@ -185,7 +256,7 @@
                       <attribute name="foreground" value="#e5eeea8d230a"/>
                       <attribute name="background" value="#21600c0b0c0b"/>
                       <attribute name="underline-color" value="#ea69bd9412a2"/>
-                      <attribute name="scale" value="2"/>
+                      <attribute name="scale" value="3"/>
                     </attributes>
                   </object>
                   <packing>
@@ -224,38 +295,10 @@
                     <property name="use_action_appearance">False</property>
                     <property name="focus_on_click">False</property>
                     <child>
-                      <object class="GtkVBox" id="vbox7">
+                      <object class="GtkImage" id="image8">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkLabel" id="lbl_rating">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="xalign">0</property>
-                            <property name="label" translatable="yes">0</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                              <attribute name="foreground" value="#08a0f92402ac"/>
-                            </attributes>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkImage" id="image8">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="pixbuf">castro-rat-inc.svg</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
+                        <property name="pixbuf">castro-rat-inc.svg</property>
                       </object>
                     </child>
                   </object>
@@ -314,38 +357,10 @@
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
                     <child>
-                      <object class="GtkVBox" id="vbox6">
+                      <object class="GtkImage" id="image6">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkLabel" id="lbl_queue_length">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="xalign">0</property>
-                            <property name="label" translatable="yes">0(0)</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                              <attribute name="foreground" value="#12c3f7e107c7"/>
-                            </attributes>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkImage" id="image6">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="pixbuf">castro-reset-queue.svg</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
+                        <property name="pixbuf">castro-reset-queue.svg</property>
                       </object>
                     </child>
                   </object>
@@ -425,39 +440,10 @@
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
                     <child>
-                      <object class="GtkVBox" id="vbox4">
+                      <object class="GtkImage" id="playpause">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkLabel" id="lbl_time">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="xalign">0</property>
-                            <property name="label">0:00/0:00</property>
-                            <property name="single_line_mode">True</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                              <attribute name="foreground" value="#1370f8080c60"/>
-                            </attributes>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkImage" id="playpause">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="pixbuf">castro-play.svg</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
+                        <property name="pixbuf">castro-play.svg</property>
                       </object>
                     </child>
                   </object>
@@ -505,39 +491,10 @@
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
                     <child>
-                      <object class="GtkVBox" id="vbox5">
+                      <object class="GtkImage" id="image1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkLabel" id="lbl_volume">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="xalign">0</property>
-                            <property name="label" translatable="yes">0</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                              <attribute name="foreground" value="#14f2f5921982"/>
-                              <attribute name="scale" value="1"/>
-                            </attributes>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkImage" id="image1">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="pixbuf">castro-vol-plus.svg</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
+                        <property name="pixbuf">castro-vol-plus.svg</property>
                       </object>
                     </child>
                   </object>
