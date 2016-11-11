@@ -1,3 +1,4 @@
+#include <pthread.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -11,6 +12,25 @@
 //#include "memory_utils.h"
 
 GtkBuilder  *xml = NULL;
+pthread_t notification_thread;
+
+void show_notification_after(gchar *message)
+{
+    GtkWidget *label = NULL;
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_notify"));
+    sleep(5);
+    gtk_label_set_text (GTK_LABEL (label), message);
+}
+
+static void ui_show_notification(gchar *message)
+{
+    GtkWidget *label = NULL;
+    pthread_cancel(notification_thread);
+    label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_notify"));
+    gtk_label_set_text (GTK_LABEL (label), message);
+    pthread_create(&notification_thread, NULL, show_notification_after, "");
+}
 
 static void ui_song_rating_update(int rating)
 {
@@ -64,6 +84,7 @@ static void cb_play_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 {
     printf("%s\n", __func__);
     mpd_toggle_play();
+    ui_show_notification("play");
     return;
 }
 
@@ -299,13 +320,17 @@ void gtk_poll(void)
         switch (mpd.state) {
             case MPD_STATE_PAUSE:
             case MPD_STATE_STOP:
-                if (error == NULL)
+                if (error == NULL) {
                     gtk_image_set_from_pixbuf(image4, pixbuf_play);
+                    ui_show_notification("pause");
+                }
                 printf("%s MPD_STATE_PAUSE or STOP\n", __func__);
                 break;
             case MPD_STATE_PLAY:
-                if (error == NULL)
+                if (error == NULL) {
                     gtk_image_set_from_pixbuf(image4, pixbuf_pause);
+                    ui_show_notification("play");
+                }
                 printf("%s MPD_STATE_PLAY\n", __func__);
         }
         gtk.state = mpd.state;
