@@ -1,7 +1,6 @@
 #ifndef __MPD_UTILS_H__
 #define __MPD_UTILS_H__
 
-#include <pthread.h>
 #include <mpd/client.h>
 
 enum mpd_conn_states {
@@ -29,9 +28,6 @@ struct t_mpd {
     bool random;
     unsigned elapsed_time;
     unsigned total_time;
-
-    pthread_mutex_t mutex_status;
-
 } mpd;
 
 //void mpd_poll();

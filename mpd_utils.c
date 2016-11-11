@@ -30,7 +30,6 @@ char albumbuf[128] = "";
 int mpd_crop()
 {
     int res = 1;
-    pthread_mutex_lock(&mpd.mutex_status);
     struct mpd_status *status = mpd_run_status(mpd.conn);
     if (status == 0) {
         res = 0;
@@ -62,7 +61,6 @@ int mpd_crop()
 DONE:
     mpd_status_free(status);
 ERROR:
-    pthread_mutex_unlock(&mpd.mutex_status);
     return res;
 }
 
@@ -182,20 +180,17 @@ char* mpd_get_title(struct mpd_song const *song)
 
 unsigned mpd_get_queue_length()
 {
-    pthread_mutex_lock(&mpd.mutex_status);
     struct mpd_status *status = mpd_run_status(mpd.conn);
     if (status == NULL)
         return 0;
     const unsigned length = mpd_status_get_queue_length(status);
     mpd_status_free(status);
-    pthread_mutex_unlock(&mpd.mutex_status);
     return length;
 }
 
 int mpd_insert (char *song_path )
 {
     int res = 0;
-    pthread_mutex_lock(&mpd.mutex_status);
     struct mpd_status *status = mpd_run_status(mpd.conn);
     if (status == NULL)
         goto ERROR;
@@ -215,7 +210,6 @@ int mpd_insert (char *song_path )
     /* move those songs to right after the current one */
     res = mpd_run_move_range(mpd.conn, from, end, cur_pos + 1);
 ERROR:
-    pthread_mutex_unlock(&mpd.mutex_status);
     return res;
 }
 #if 0
@@ -364,7 +358,6 @@ void mpd_put_state(void)
     int len;
     unsigned queue_len;
     //    int song_pos, next_song_pos;
-    pthread_mutex_lock(&mpd.mutex_status);
     struct mpd_status *status = mpd_run_status(mpd.conn);
 
     if (!status) {
@@ -390,7 +383,7 @@ void mpd_put_state(void)
 
     mpd_status_free(status);
 ERROR:
-    pthread_mutex_unlock(&mpd.mutex_status);
+    return;
 }
 #if 0
 void mpd_poll()
