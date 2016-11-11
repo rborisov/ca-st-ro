@@ -51,7 +51,9 @@ void get_random_song(char *path)
     bool Done = false;
     char *str = NULL;
 
-    struct mpd_connection *conn = mpd.conn; //mpd_connection_new(NULL, NULL, 3000);
+    rnd_completed = false;
+
+    struct mpd_connection *conn = mpd_connection_new(NULL, NULL, 3000);
     if (conn == NULL) {
         syslog(LOG_ERR, "%s - Out of memory.", __func__);
         goto DONE;
@@ -62,7 +64,7 @@ void get_random_song(char *path)
         goto DONE;
     }
 
-    struct mpd_stats *stats = mpd_run_stats(mpd.conn);
+    struct mpd_stats *stats = mpd_run_stats(conn);
     if (stats == NULL)
         goto DONE;
     numberofsongs = mpd_stats_get_number_of_songs(stats);
@@ -71,12 +73,12 @@ void get_random_song(char *path)
 
     syslog(LOG_DEBUG, "%s: path: %s; number of songs: %i skip: %i\n",
             __func__, path, numberofsongs, skipnum);
-    if (!mpd_send_list_all_meta(mpd.conn, ""))//path))
+    if (!mpd_send_list_all_meta(conn, ""))//path))
     {
         syslog(LOG_ERR, "%s: error: mpd_send_list_meta %s\n", __func__, path);
         goto DONE;
     }
-    while((entity = mpd_recv_entity(mpd.conn)) != NULL)
+    while((entity = mpd_recv_entity(conn)) != NULL)
     {
         const struct mpd_song *song;
         if (mpd_entity_get_type(entity) == MPD_ENTITY_TYPE_SONG)
@@ -107,12 +109,14 @@ void get_random_song(char *path)
     }
 DONE:
     if (Done && strlen(str) > 5) {
-        if (!mpd_run_add(mpd.conn, str)) {
-            syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(mpd.conn));
+        if (!mpd_run_add(conn, str)) {
+            syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(conn));
         }
     }
-//    if(conn != NULL)
-//        mpd_connection_free(conn);
+    if(conn != NULL)
+        mpd_connection_free(conn);
+
+    rnd_completed = true;
 
     return;
 }
@@ -213,7 +217,12 @@ void mpd_poll()
             {
                 char str[128] = "";
                 syslog(LOG_DEBUG, "%s: queue is empty %i(%i)\n", __func__, mpd.song_pos, mpd.queue_len);
-                get_random_song("");
+                if (rnd_completed) {
+                    int res = pthread_create(&rndthread, NULL, get_random_song, "");
+                    if (res) {
+                        syslog(LOG_ERR, "%s: pthread_create returns %s", __func__, res);
+                    }
+                }
 /*                get_random_song(str, "");
                 if (strlen(str) > 5)
                     if (!mpd_run_add(mpd.conn, str)) {
