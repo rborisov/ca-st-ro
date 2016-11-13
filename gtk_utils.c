@@ -11,6 +11,7 @@
 #include "utils.h"
 //#include "memory_utils.h"
 
+#define black_vertical_rectangle "\u25AE"
 GtkBuilder  *xml = NULL;
 pthread_t notification_thread;
 
@@ -91,8 +92,13 @@ static void cb_play_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 static void cb_vol_inc_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
+    char volmessage[100];
+    int i=0;
     printf("%s\n", __func__);
     mpd_change_volume(5);
+    while (mpd.volume/100) {
+        volmessage[i++] = black_vertical_rectangle;
+    }
     return;
 }
 static void cb_vol_dec_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
@@ -386,7 +392,6 @@ void gtk_poll(void)
             gtk_win_bg(album_art);
         }
 
-        ui_song_rating_update(mpd_db_get_current_song_rating());
 
         if (title && artist) {
             /*
@@ -394,16 +399,9 @@ void gtk_poll(void)
              */
             int np, rating;
             np = db_listen_song(title, artist, album);
+            rating = mpd_db_get_current_song_rating();
             ui_song_np_update(np);
-/*            notify_init (title);
-            if (album)
-                artist= g_strdup_printf("%i %i\n%s\n%s", rating, np, artist, album);
-            else
-                artist= g_strdup_printf("%i %i\n%s", rating, np, artist);
-            gtk.TrackNotify = notify_notification_new (title, artist, artist_art);
-            notify_notification_show (gtk.TrackNotify, NULL);
-            g_object_unref(G_OBJECT(gtk.TrackNotify));
-            notify_uninit();*/
+            ui_song_rating_update(rating);
         }
 
         gtk.song_id = mpd.song_id;
@@ -412,10 +410,6 @@ void gtk_poll(void)
     /*
      * time elapsed / total
      * */
-/*    minutes_elapsed = mpd.elapsed_time/60;
-    minutes_total = mpd.total_time/60;
-    sprintf(time, "%02d:%02d/%02d:%02d", minutes_elapsed, mpd.elapsed_time - minutes_elapsed*60,
-            minutes_total, mpd.total_time - minutes_total*60);*/
     str = g_strdup_printf ("%02i:%02i/%02i:%02i", mpd.elapsed_time / 60, mpd.elapsed_time % 60,
             mpd.total_time / 60, mpd.total_time % 60);
     label3 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_time"));
