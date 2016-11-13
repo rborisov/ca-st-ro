@@ -1,5 +1,6 @@
 #include <pthread.h>
 #include <glib.h>
+#include <string.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
@@ -11,7 +12,8 @@
 #include "utils.h"
 //#include "memory_utils.h"
 
-#define black_vertical_rectangle "\u25AE"
+#define black_vertical_rectangle '|'
+
 GtkBuilder  *xml = NULL;
 pthread_t notification_thread;
 
@@ -92,20 +94,29 @@ static void cb_play_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 static void cb_vol_inc_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
-    char volmessage[100];
-    int i=0;
+    char volmessage[20] = "\0";
+    int num;
     printf("%s\n", __func__);
     mpd_change_volume(5);
-    while (mpd.volume/100) {
-        volmessage[i++] = black_vertical_rectangle;
+    num = mpd.volume/5;
+    if (num) {
+        memset(volmessage, black_vertical_rectangle, num);
+        ui_show_notification(volmessage);
     }
     return;
 }
 static void cb_vol_dec_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
+    char volmessage[20] = "\0";
+    int num;
     printf("%s\n", __func__);
     mpd_change_volume(-5);
+    num = mpd.volume/5;
+    if (num) {
+        memset(volmessage, black_vertical_rectangle, num);
+        ui_show_notification(volmessage);
+    }
     return;
 }
 static void cb_like_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
