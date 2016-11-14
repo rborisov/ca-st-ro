@@ -349,6 +349,9 @@ void gtk_poll(void)
                     ui_show_notification("play");
                 }
                 printf("%s MPD_STATE_PLAY\n", __func__);
+                break;
+            case MPD_STATE_UNKNOWN:
+                printf("%s MPD_STATE_UNKNOWN\n", __func__);
         }
         gtk.state = mpd.state;
     }
