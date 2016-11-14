@@ -76,8 +76,9 @@ static void cb_prev_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 static void cb_next_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
         G_GNUC_UNUSED gpointer  data)
 {
-    printf("%s\n", __func__);
-    mpd_db_update_current_song_rating(-1);
+    char rating[10];
+    sprintf(rating, "%d", mpd_db_update_current_song_rating(-1));
+    ui_show_notification(rating);
     mpd_next();
     return;
 }
@@ -94,11 +95,11 @@ static void cb_play_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 static void cb_vol_inc_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
-    char volmessage[20] = "\0";
+    char volmessage[100/VOLUMESTEP] = "\0";
     int num;
     printf("%s\n", __func__);
-    mpd_change_volume(5);
-    num = mpd.volume/5;
+    mpd_change_volume(VOLUMESTEP);
+    num = mpd.volume/VOLUMESTEP;
     if (num) {
         memset(volmessage, black_vertical_rectangle, num);
         ui_show_notification(volmessage);
@@ -108,11 +109,11 @@ static void cb_vol_inc_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 static void cb_vol_dec_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
-    char volmessage[20] = "\0";
+    char volmessage[100/VOLUMESTEP] = "\0";
     int num;
     printf("%s\n", __func__);
-    mpd_change_volume(-5);
-    num = mpd.volume/5;
+    mpd_change_volume(-VOLUMESTEP);
+    num = mpd.volume/VOLUMESTEP;
     if (num) {
         memset(volmessage, black_vertical_rectangle, num);
         ui_show_notification(volmessage);
@@ -122,8 +123,12 @@ static void cb_vol_dec_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 static void cb_like_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
-    printf("%s\n", __func__);
-    ui_song_rating_update(mpd_db_update_current_song_rating(5));
+    char rating[10];
+    int rat = mpd_db_update_current_song_rating(5);
+    sprintf(rating, "%d", rat);
+    ui_show_notification(rating);
+    ui_song_rating_update(rat);
+
     return;
 }
 static void cb_radio_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
@@ -144,8 +149,10 @@ static void cb_crop_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 static void cb_dislike_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
                 G_GNUC_UNUSED gpointer   data)
 {
-    printf("%s\n", __func__);
-    mpd_db_update_current_song_rating(-5);
+    char rating[10];
+    sprintf(rating, "%d", mpd_db_update_current_song_rating(-5));
+    ui_show_notification(rating);
+
     mpd_next();
     return;
 }

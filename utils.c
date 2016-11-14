@@ -213,7 +213,7 @@ void mpd_poll()
             break;
         case MPD_CONNECTED:
             mpd_put_state();
-            if (mpd.song_pos+1 >= mpd.queue_len)
+            if (mpd.song_pos+QUEUETAIL >= mpd.queue_len)
             {
                 syslog(LOG_DEBUG, "%s: queue is empty %i(%i)\n", __func__, mpd.song_pos, mpd.queue_len);
                 if (rnd_completed) {

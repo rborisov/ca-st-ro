@@ -8,5 +8,7 @@
 #define INCOMPLETEPATH "/storage/ca-st-ro/incomplete"
 #define DBPATH "/storage"
 #define IMAGEPATH "/storage/images"
+#define VOLUMESTEP 5
+#define QUEUETAIL 3
 
 #endif

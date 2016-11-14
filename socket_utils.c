@@ -42,9 +42,8 @@ void mntsrv_poll()
     struct sockaddr_in cli_addr;
     char buffer[3*128];
 
-    printf("_");
     clilen = sizeof(cli_addr);
-/*    newsockfd = accept(mnt_sockfd,
+    newsockfd = accept(mnt_sockfd,
             (struct sockaddr *)&cli_addr,
             &clilen);
     if (newsockfd < 0)
@@ -52,7 +51,7 @@ void mntsrv_poll()
     bzero(buffer,256);
     n = read(newsockfd, buffer, 255);
     if (n < 0) printf("ERROR reading from socket\n");
-    printf("Here is the message: %s\n",buffer);*/
+    printf("Here is the message: %s\n",buffer);
     
     close(newsockfd);
 }
