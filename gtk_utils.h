@@ -2,7 +2,8 @@
 #define __GTK_UTILS_H__
 
 #include <libintl.h>
-#include <libnotify/notify.h>
+//#include <libnotify/notify.h>
+#include <gtk/gtk.h>
 #include "config.h"
 #include <mpd/client.h>
 
@@ -15,7 +16,7 @@
 
 struct t_gtk {
     GtkWidget    *main_window;
-    NotifyNotification * TrackNotify;
+//    NotifyNotification * TrackNotify;
     int song_id;
     unsigned queue_version;
     int conn_state;
@@ -25,5 +26,6 @@ struct t_gtk {
 
 void gtk_poll(void);
 void gtk_app_init(void);
+void ui_show_notification(gchar *message);
 
 #endif

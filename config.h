@@ -10,5 +10,6 @@
 #define IMAGEPATH "/storage/images"
 #define VOLUMESTEP 5
 #define QUEUETAIL 3
+#define SERVERPORT "9213"
 
 #endif

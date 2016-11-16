@@ -3,8 +3,8 @@
 
 #define _MNTPORT_ 9213
 
-int mntsrv_init();
-void mntsrv_poll();
-void mntsrv_close();
+int srv_init();
+void srv_close();
+void mainthread(void);
 
 #endif

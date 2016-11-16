@@ -69,6 +69,7 @@ int main (int argc, char *argv[])
 
     utils_init();
     db_init();
+    srv_init();
 
     gdk_threads_enter ();
 	hndl_id0 = g_idle_add((GtkFunction)mpd_idle, NULL);
@@ -79,6 +80,7 @@ int main (int argc, char *argv[])
     gtk_idle_remove(hndl_id1);
     gdk_threads_leave ();
 
+    srv_close();
     db_close();
     utils_close();
 cleanup:

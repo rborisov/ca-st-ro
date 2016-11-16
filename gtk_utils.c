@@ -9,6 +9,7 @@
 #include "gtk_utils.h"
 #include "mpd_utils.h"
 #include "db_utils.h"
+#include "socket_utils.h"
 #include "utils.h"
 //#include "memory_utils.h"
 
@@ -16,6 +17,7 @@
 
 GtkBuilder  *xml = NULL;
 pthread_t notification_thread;
+//pthread_t main_thread;
 
 void show_notification_after(gchar *message)
 {
@@ -26,7 +28,7 @@ void show_notification_after(gchar *message)
     gtk_label_set_text (GTK_LABEL (label), message);
 }
 
-static void ui_show_notification(gchar *message)
+void ui_show_notification(gchar *message)
 {
     GtkWidget *label = NULL;
     pthread_cancel(notification_thread);
@@ -291,6 +293,12 @@ void gtk_app_init(void)
     gtk.conn_state = -555;
 
     gtk.state = -555;
+
+    //srv_init();
+/*    if (pthread_create(&main_thread, NULL, mainthread, NULL) != 0) {
+        printf("%s: main thread error", __func__);
+    }*/
+
 cleanup:
     return;
 }
