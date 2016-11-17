@@ -100,7 +100,7 @@ void get_random_song(char *path)
                 bool Yes = (rand() % 100) < probability;
                 if (Yes) {
                     str = mpd_song_get_uri(song);
-                    syslog(LOG_DEBUG, "%s: probability: %i; uri: %s ", __func__, probability, str);
+                    syslog(LOG_DEBUG, "%s: probability: %i; when: %d; uri: %s", __func__, probability, whenplayed, str);
                     Done = true;
                 }
             }

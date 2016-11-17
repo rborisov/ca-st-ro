@@ -132,6 +132,7 @@ int db_get_song_played(char* song, char* artist)
 {
     time_t rawtime;
     struct tm *tminfo;
+    struct tm *tmsong;
 
     time ( &rawtime );
     tminfo = localtime ( &rawtime );
@@ -142,8 +143,22 @@ int db_get_song_played(char* song, char* artist)
     
     sqlchar3 = sql_get_text_field(conn, "SELECT played FROM Songs WHERE "
             "song = '%s' AND artist = '%s'", song, artist);
-    
-   // syslog("%s :: %s", sqlchar3, asctime(tminfo));
+    if (sqlchar3) { 
+        syslog(LOG_DEBUG, "%d %d %d %d", tminfo->tm_year, tminfo->tm_mon,
+                tminfo->tm_mday, tminfo->tm_hour);
+        syslog(LOG_DEBUG, "%s", sqlchar3);
+        tmsong = getdate(sqlchar3);
+        if (tmsong == NULL) {
+            syslog(LOG_ERR, "failed; getdate_err");
+        } else {
+            syslog(LOG_DEBUG, "%d %d %d %d", tmsong->tm_year, tmsong->tm_mon,
+                    tmsong->tm_mday, tmsong->tm_hour);
+        }
+/*        if (tmsong->tm_year < tminfo->tm_year) {
+            syslog(LOG_DEBUG, "%d < %d", tmsong->tm_year, tminfo->tm_year);
+        }*/
+    }
+            //asctime(tminfo));
     
     return 0;
 }
