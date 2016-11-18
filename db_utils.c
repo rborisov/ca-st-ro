@@ -128,11 +128,16 @@ int db_get_song_numplayed(char* song, char* artist)
     return np;
 }
 
+/*
+ * played days before
+ */
 int db_get_song_played(char* song, char* artist)
 {
     time_t rawtime;
     struct tm *tminfo;
-    struct tm *tmsong;
+    struct tm tmsong;
+    char *pch;
+    int res = 50;
 
     time ( &rawtime );
     tminfo = localtime ( &rawtime );
@@ -144,23 +149,18 @@ int db_get_song_played(char* song, char* artist)
     sqlchar3 = sql_get_text_field(conn, "SELECT played FROM Songs WHERE "
             "song = '%s' AND artist = '%s'", song, artist);
     if (sqlchar3) { 
-        syslog(LOG_DEBUG, "%d %d %d %d", tminfo->tm_year, tminfo->tm_mon,
-                tminfo->tm_mday, tminfo->tm_hour);
-        syslog(LOG_DEBUG, "%s", sqlchar3);
-        tmsong = getdate(sqlchar3);
-        if (tmsong == NULL) {
-            syslog(LOG_ERR, "failed; getdate_err");
-        } else {
-            syslog(LOG_DEBUG, "%d %d %d %d", tmsong->tm_year, tmsong->tm_mon,
-                    tmsong->tm_mday, tmsong->tm_hour);
+//        syslog(LOG_DEBUG, "%d-%d-%d %d:%d:%d ---> %s", tminfo->tm_year, tminfo->tm_mon, tminfo->tm_mday,
+//                tminfo->tm_hour, tminfo->tm_min, tminfo->tm_sec, sqlchar3);
+        if ( strptime(sqlchar3, "%Y-%m-%d %H:%M:%S", &tmsong) != NULL ) {
+//            syslog(LOG_DEBUG, "<<%d %d\n", tmsong.tm_year, tmsong.tm_yday);
+            res = (tminfo->tm_year - tmsong.tm_year) * 365 + 
+                tminfo->tm_yday - tmsong.tm_yday;
         }
-/*        if (tmsong->tm_year < tminfo->tm_year) {
-            syslog(LOG_DEBUG, "%d < %d", tmsong->tm_year, tminfo->tm_year);
-        }*/
     }
-            //asctime(tminfo));
+
+//    syslog(LOG_DEBUG, "==%d", res);
     
-    return 0;
+    return res;
 }
 
 int db_get_album_id(char* artist, char* album)

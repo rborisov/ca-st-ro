@@ -80,12 +80,12 @@ void get_random_song(char *path)
     }
     while((entity = mpd_recv_entity(conn)) != NULL)
     {
-        const struct mpd_song *song;
         if (mpd_entity_get_type(entity) == MPD_ENTITY_TYPE_SONG)
         {
             if ((skipnum-- > 0) || Done)
                 continue;
-
+#if 0
+            const struct mpd_song *song;
             int listened, whenplayed;
             song = mpd_entity_get_song(entity);
             listened = db_get_song_numplayed(mpd_get_title(song),
@@ -104,6 +104,19 @@ void get_random_song(char *path)
                     Done = true;
                 }
             }
+#else
+            const struct mpd_song *song = mpd_entity_get_song(entity);
+            int whenplayed = db_get_song_played(mpd_get_title(song),
+                    mpd_get_artist(song));
+            int probability = whenplayed + 
+                db_get_song_rating(mpd_get_title(song), mpd_get_artist(song));
+            bool Yes = (rand() % 100) < probability;
+            if (Yes) {
+                str = mpd_song_get_uri(song);
+                syslog(LOG_DEBUG, "%s: probability: %i; when: %d; uri: %s", __func__, probability, whenplayed, str);
+                Done = true;
+            }
+#endif
         }
         mpd_entity_free(entity);
     }

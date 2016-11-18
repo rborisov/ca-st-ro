@@ -4,6 +4,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
+#include <syslog.h>
 
 #include "config.h"
 #include "gtk_utils.h"
@@ -34,7 +35,7 @@ void ui_show_notification(gchar *message)
     pthread_cancel(notification_thread);
     label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_notify"));
     gtk_label_set_text (GTK_LABEL (label), message);
-    pthread_create(&notification_thread, NULL, show_notification_after, "");
+    pthread_create(&notification_thread, NULL, show_notification_after, "\0");
 }
 
 static void ui_song_rating_update(int rating)
@@ -293,12 +294,6 @@ void gtk_app_init(void)
     gtk.conn_state = -555;
 
     gtk.state = -555;
-
-    //srv_init();
-/*    if (pthread_create(&main_thread, NULL, mainthread, NULL) != 0) {
-        printf("%s: main thread error", __func__);
-    }*/
-
 cleanup:
     return;
 }
@@ -356,17 +351,17 @@ void gtk_poll(void)
                     gtk_image_set_from_pixbuf(image4, pixbuf_play);
                     ui_show_notification("pause");
                 }
-                printf("%s MPD_STATE_PAUSE or STOP\n", __func__);
+                syslog(LOG_INFO, "%s MPD_STATE_PAUSE or STOP\n", __func__);
                 break;
             case MPD_STATE_PLAY:
                 if (error == NULL) {
                     gtk_image_set_from_pixbuf(image4, pixbuf_pause);
                     ui_show_notification("play");
                 }
-                printf("%s MPD_STATE_PLAY\n", __func__);
+                syslog(LOG_INFO, "%s MPD_STATE_PLAY\n", __func__);
                 break;
             case MPD_STATE_UNKNOWN:
-                printf("%s MPD_STATE_UNKNOWN\n", __func__);
+                syslog(LOG_INFO, "%s MPD_STATE_UNKNOWN\n", __func__);
         }
         gtk.state = mpd.state;
     }
@@ -381,13 +376,13 @@ void gtk_poll(void)
          */
         title = mpd_get_current_title();
         if (title) {
-            printf("%s %d %d\n", title, mpd.song_id, gtk.song_id);
+            syslog(LOG_INFO, "%s: %s %d %d\n", __func__, title, mpd.song_id, gtk.song_id);
             label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_track"));
             gtk_label_set (GTK_LABEL (label), title);
         }
         artist = mpd_get_current_artist();
         if (artist) {
-            printf("%s\n", artist);
+            syslog(LOG_INFO, "%s: %s", __func__, artist);
             label1 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_artist"));
             gtk_label_set (GTK_LABEL (label1), artist);
             artist_art = db_get_artist_art(artist);
@@ -395,7 +390,7 @@ void gtk_poll(void)
             //impossible to have album without artist
             album = get_current_album();
             if (album) {
-                printf("%s\n", album);
+                syslog(LOG_INFO, "%s: %s\n", __func__, album);
                 label2 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_album"));
                 gtk_label_set (GTK_LABEL (label2), album);
                 album_art = db_get_album_art(artist, album);
@@ -408,7 +403,7 @@ void gtk_poll(void)
              *                   */
             image0 = GTK_WIDGET (gtk_builder_get_object (xml, "img_artist"));
             if (artist_art) {
-                printf("art: %s\n", artist_art);
+                syslog(LOG_INFO, "%s: art: %s\n", __func__, artist_art);
                 artist_art = g_strdup_printf("%s/%s", IMAGEPATH, artist_art);
             } else {
                 artist_art = g_strdup_printf("%s/art.png", IMAGEPATH);
@@ -426,9 +421,13 @@ void gtk_poll(void)
             /*
              * update DB with increased num played
              */
-            int np, rating;
+            int np, rating, daysbefore;
+            daysbefore = db_get_song_played(title, artist);
             np = db_listen_song(title, artist, album);
             rating = mpd_db_get_current_song_rating();
+            syslog(LOG_INFO, "%s: np %d; rt %d; db %d>%d", __func__, np, rating, 
+                    daysbefore, db_get_song_played(title, artist));
+
             ui_song_np_update(np);
             ui_song_rating_update(rating);
         }
