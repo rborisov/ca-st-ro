@@ -5,7 +5,7 @@
 
 void utils_init();
 void utils_close();
-void get_random_song(char *, char *);
+//void get_random_song(char *, char *);
 void mpd_poll();
 char* get_current_album();
 int mpd_db_update_current_song_rating(int);

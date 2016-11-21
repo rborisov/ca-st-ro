@@ -366,6 +366,8 @@ int db_listen_song(char* song, char* artist, char* album)
         if (rc == SQLITE_OK)
             rc = sql_exec(conn, "UPDATE Songs SET played = DATETIME('NOW', 'LOCALTIME') "
                     "WHERE song = '%s' AND artist = '%s'", song, artist);
+        else
+            syslog(LOG_ERR, "%s: SQLITE", __func__);
     } else {
         syslog(LOG_DEBUG, "%s %s %s doesn't exist. adding...\n", __func__, song, artist);
         rc = sql_exec(conn, "INSERT INTO Songs (song, artist, added, played, numplayed, rating)"

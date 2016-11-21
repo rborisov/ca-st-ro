@@ -11,16 +11,20 @@
 #include "mpd_utils.h"
 
 struct memstruct albumstr;
+struct memstruct rndstr;
 pthread_t rndthread;
 bool rnd_completed = true;
+pthread_mutex_t rnd_mutex;
 
 void utils_init()
 {
     memory_init((void *)&albumstr);
+    memory_init((void *)&rndstr);
 }
 void utils_close()
 {
     memory_clean((void *)&albumstr);
+    memory_clean((void *)&rndstr);
 }
 
 void rm_current_songfile()
@@ -45,6 +49,8 @@ void rm_current_songfile()
 
 void get_random_song(char *path)
 {
+    pthread_mutex_lock(&rnd_mutex);
+
     struct mpd_entity *entity;
     int listened0 = 65000,
         skipnum, numberofsongs = 0;
@@ -84,44 +90,29 @@ void get_random_song(char *path)
         {
             if ((skipnum-- > 0) || Done)
                 continue;
-#if 0
-            const struct mpd_song *song;
-            int listened, whenplayed;
-            song = mpd_entity_get_song(entity);
-            listened = db_get_song_numplayed(mpd_get_title(song),
-                    mpd_get_artist(song));
-            whenplayed = db_get_song_played(mpd_get_title(song),
-                    mpd_get_artist(song));
-            if (listened < listened0) {
-                listened0 = listened;
-                int probability = 50 - listened +
-                    db_get_song_rating(mpd_get_title(song),
-                            mpd_get_artist(song));
-                bool Yes = (rand() % 100) < probability;
-                if (Yes) {
-                    str = mpd_song_get_uri(song);
-                    syslog(LOG_DEBUG, "%s: probability: %i; when: %d; uri: %s", __func__, probability, whenplayed, str);
-                    Done = true;
-                }
-            }
-#else
             const struct mpd_song *song = mpd_entity_get_song(entity);
             int whenplayed = db_get_song_played(mpd_get_title(song),
                     mpd_get_artist(song));
-            int probability = whenplayed + 
-                db_get_song_rating(mpd_get_title(song), mpd_get_artist(song));
+            /*
+             * quite sofisticated formula to calculate the probability of song to be playing
+             */
+            int probability = 50 + whenplayed/10 + 
+                db_get_song_rating(mpd_get_title(song), mpd_get_artist(song)) * 10;
+
             bool Yes = (rand() % 100) < probability;
             if (Yes) {
                 str = mpd_song_get_uri(song);
+                memory_write(str, 1, strlen(str), (void *)&rndstr);
+                str = rndstr.memory;
                 syslog(LOG_DEBUG, "%s: probability: %i; when: %d; uri: %s", __func__, probability, whenplayed, str);
                 Done = true;
             }
-#endif
         }
         mpd_entity_free(entity);
     }
 DONE:
-    if (Done && strlen(str) > 5) {
+    if (Done) {
+        syslog(LOG_DEBUG, "%s: add to queue: %s", __func__, str);
         if (!mpd_run_add(conn, str)) {
             syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(conn));
         }
@@ -130,6 +121,7 @@ DONE:
         mpd_connection_free(conn);
 
     rnd_completed = true;
+    pthread_mutex_unlock(&rnd_mutex);
 
     return;
 }
