@@ -44,6 +44,8 @@ void ui_show_speed(gchar *message)
             message++;
         case 1:
             gtk_label_set_text (GTK_LABEL (label[2]), message);
+        default:
+            syslog(LOG_ERR, "%s: speed %s, length %d", __func__, message, len);
     }
 }
 
