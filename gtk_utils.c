@@ -18,23 +18,32 @@
 
 GtkBuilder  *xml = NULL;
 pthread_t notification_thread;
-//pthread_t main_thread;
 
 void ui_show_speed(gchar *message)
 {
-    int i;
+    char a[2] = {0,0};
     GtkWidget *label[3];
-    syslog(LOG_DEBUG, "%s: %s %d", __func__, message, strlen(message));
-    label[0] = GTK_WIDGET (gtk_builder_get_object (xml, "lab_gps_speed_units"));
+    int len = strlen(message);
+    
+    label[0] = GTK_WIDGET (gtk_builder_get_object (xml, "lab_gps_speed_hundreds"));
+    gtk_widget_set_visible(GTK_WIDGET(label[0]), FALSE);
     label[1] = GTK_WIDGET (gtk_builder_get_object (xml, "lab_gps_speed_tens"));
-    gtk_entry_set_visibility(GTK_LABEL (label[1]), false);
-//    gtk_label_set_text (GTK_LABEL (label[1]), "");
-    label[2] = GTK_WIDGET (gtk_builder_get_object (xml, "lab_gps_speed_hundreds"));
-    gtk_entry_set_visibility(GTK_LABEL (label[2]), false);
-//    gtk_label_set_text (GTK_LABEL (label[2]), "");
-    for (i = 0; i < strlen(message); i++) {
-        gtk_entry_set_visibility(GTK_LABEL (label[i]), true);
-        gtk_label_set_text (GTK_LABEL (label[i]), message);
+    gtk_widget_set_visible(GTK_WIDGET(label[1]), FALSE);
+    label[2] = GTK_WIDGET (gtk_builder_get_object (xml, "lab_gps_speed_units"));
+
+    switch (len) {
+        case 3:
+            a[0] = message[0];
+            gtk_label_set_text (GTK_LABEL (label[0]), a);
+            gtk_widget_set_visible(GTK_WIDGET(label[0]), TRUE);
+            message++;
+        case 2:
+            a[0] = message[0];
+            gtk_label_set_text (GTK_LABEL (label[1]), a);
+            gtk_widget_set_visible(GTK_WIDGET(label[1]), TRUE);
+            message++;
+        case 1:
+            gtk_label_set_text (GTK_LABEL (label[2]), message);
     }
 }
 

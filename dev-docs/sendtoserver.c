@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
 #include <sys/types.h>
@@ -50,8 +51,11 @@ done:
 
 void main(void)
 {
+    int i;
+    char a[3];
     while (1) {
-        send_to_server("[speed]", "20");
+        sprintf(a, "%u", rand() % 180);
+        send_to_server("[speed]", a);
         sleep(2);
     }
 }
