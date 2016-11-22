@@ -15,17 +15,68 @@
 #define BACKLOG     10
 pthread_t main_thread;
 
+enum message_type
+{
+    gps_speed,
+    notification_new_file,
+    notification_deleted_file,
+    notification_mnt_point,
+    unknown
+};
+
+enum message_type get_type_message(const char *buffer, char **message)
+{
+    enum message_type type = unknown;
+    char *start = buffer;
+    char *end = buffer;
+    *message = start;
+    while (*buffer) {
+        if (*buffer == '[') start = buffer;
+        else if (*buffer == ']') end = buffer;
+        if (start < end && *start) {
+            *end = 0;
+            if (strcmp(start+1, "newfile") == 0) type = notification_new_file;
+            else if (strcmp(start+1, "mntpoint") == 0) type = notification_mnt_point;
+            else if (strcmp(start+1, "speed") == 0) type = gps_speed;
+            *message = end+1;
+            *end = ']';
+            break;
+        }
+        buffer++;
+    }
+    return type;
+}
+
+
 void *handle(void *pnewsock)
 {
-    int sock = *(int*)pnewsock;
-    char buffer[128];
+    int type, sock = *(int*)pnewsock;
+    char *message, buffer[128];
     ssize_t n;
     bzero(buffer, 128);
     n = read(sock, buffer, 127);
     if (n < 0) 
         syslog(LOG_ERR, "%s: ERROR reading from socket", __func__);
-    //printf("> %s\n", buffer);
-    ui_show_notification(buffer);
+    type = get_type_message(buffer, &message);
+    syslog(LOG_DEBUG, "%s: %s >> %d, %s\n", __func__, buffer, type, message);
+    switch (type) {
+        case notification_new_file:
+            sprintf(buffer, "new: %s", message);
+            ui_show_notification(buffer);
+            break;
+        case notification_deleted_file:
+            sprintf(buffer, "del: %s", message);
+            ui_show_notification(buffer);
+            break;
+        case notification_mnt_point:
+            sprintf(buffer, "mnt: %s", message);
+            ui_show_notification(buffer);
+            break;
+        case unknown:
+        default:
+            ui_show_notification(message);
+    }
+//    ui_show_notification(buffer);
     free(pnewsock);
 
     return NULL;
@@ -83,7 +134,7 @@ void mainthread(void)
         }
         else {
             /*printf("Got a connection from %s on port %d\n", 
-                    inet_ntoa(their_addr.sin_addr), htons(their_addr.sin_port));*/
+              inet_ntoa(their_addr.sin_addr), htons(their_addr.sin_port));*/
             /* Make a safe copy of newsock */
             int *safesock = malloc(sizeof(int));
             if (safesock) {
