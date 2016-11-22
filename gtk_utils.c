@@ -312,7 +312,11 @@ void gtk_poll(void)
     gchar *title = NULL, *artist = NULL, *album = NULL;
     gchar time[11] = "00:00/00:00";
     int minutes_elapsed, minutes_total;
-    gchar *str, *artist_art, *album_art = NULL;
+    gchar *str, 
+#if 0
+          *artist_art, 
+#endif
+          *album_art = NULL;
    
     ui_queue_update(mpd.song_pos+1, mpd.queue_len);
 
@@ -385,8 +389,9 @@ void gtk_poll(void)
             syslog(LOG_INFO, "%s: %s", __func__, artist);
             label1 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_artist"));
             gtk_label_set (GTK_LABEL (label1), artist);
+#if 0
             artist_art = db_get_artist_art(artist);
-       
+#endif
             //impossible to have album without artist
             album = get_current_album();
             if (album) {
@@ -401,6 +406,7 @@ void gtk_poll(void)
             /*
              *          * artist art
              *                   */
+#if 0
             image0 = GTK_WIDGET (gtk_builder_get_object (xml, "img_artist"));
             if (artist_art) {
                 syslog(LOG_INFO, "%s: art: %s\n", __func__, artist_art);
@@ -409,7 +415,7 @@ void gtk_poll(void)
                 artist_art = g_strdup_printf("%s/art.png", IMAGEPATH);
             }
             gtk_image_set_from_file(GTK_IMAGE (image0), artist_art);
-
+#endif
             /*
              * album art
              */
