@@ -60,6 +60,9 @@ void *handle(void *pnewsock)
     type = get_type_message(buffer, &message);
     syslog(LOG_DEBUG, "%s: %s >> %d, %s\n", __func__, buffer, type, message);
     switch (type) {
+        case gps_speed:
+            ui_show_speed(message);
+            break;
         case notification_new_file:
             sprintf(buffer, "new: %s", message);
             ui_show_notification(buffer);

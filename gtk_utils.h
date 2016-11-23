@@ -27,5 +27,6 @@ struct t_gtk {
 void gtk_poll(void);
 void gtk_app_init(void);
 void ui_show_notification(gchar *message);
+void ui_show_speed(gchar *message);
 
 #endif
