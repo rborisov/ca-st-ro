@@ -211,7 +211,6 @@ sql_get_text_field(sqlite3 *db, const char *fmt, ...)
 
 	if (db == NULL)
 	{
-		//DPRINTF(E_WARN, L_DB_SQL, "db is NULL\n");
         syslog(LOG_DEBUG, "%s db is NULL\n", __func__);
 		return NULL;
 	}
@@ -220,7 +219,6 @@ sql_get_text_field(sqlite3 *db, const char *fmt, ...)
 	sql = sqlite3_vmprintf(fmt, ap);
 	va_end(ap);
 
-	//DPRINTF(E_DEBUG, L_DB_SQL, "sql: %s\n", sql);
 //    syslog(LOG_DEBUG, "%s sql: %s\n", __func__, sql);
 
 	switch (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL))
@@ -228,7 +226,6 @@ sql_get_text_field(sqlite3 *db, const char *fmt, ...)
 		case SQLITE_OK:
 			break;
 		default:
-			//DPRINTF(E_ERROR, L_DB_SQL, "prepare failed: %s\n%s\n", sqlite3_errmsg(db), sql);
             syslog(LOG_DEBUG, "%s prepare failed: %s\n%s\n", __func__, sqlite3_errmsg(db), sql);
 			sqlite3_free(sql);
 			return NULL;
@@ -262,7 +259,6 @@ sql_get_text_field(sqlite3 *db, const char *fmt, ...)
 			len = sqlite3_column_bytes(stmt, 0);
 			if ((str = sqlite3_malloc(len + 1)) == NULL)
 			{
-				//DPRINTF(E_ERROR, L_DB_SQL, "malloc failed\n");
                 syslog(LOG_DEBUG, "%s malloc failed\n", __func__);
 				break;
 			}
@@ -271,7 +267,6 @@ sql_get_text_field(sqlite3 *db, const char *fmt, ...)
 			break;
 
 		default:
-			//DPRINTF(E_WARN, L_DB_SQL, "SQL step failed: %s\n", sqlite3_errmsg(db));
             syslog(LOG_DEBUG, "%s SQL step failed: %s\n", __func__, sqlite3_errmsg(db));
 			str = NULL;
 			break;

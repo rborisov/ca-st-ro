@@ -15,6 +15,7 @@ struct memstruct rndstr;
 pthread_t rndthread;
 bool rnd_completed = true;
 pthread_mutex_t rnd_mutex;
+static int skip_multiplier = 1;
 
 void utils_init()
 {
@@ -49,16 +50,16 @@ void rm_current_songfile()
 
 void get_random_song(char *path)
 {
-    pthread_mutex_lock(&rnd_mutex);
-
     struct mpd_entity *entity;
     int listened0 = 65000,
         skipnum, numberofsongs = 0;
     bool Done = false;
     char *str = NULL;
+    int rndprb = (rand() % 100);
 
     rnd_completed = false;
 
+    pthread_mutex_lock(&rnd_mutex);
     struct mpd_connection *conn = mpd_connection_new(NULL, NULL, 3000);
     if (conn == NULL) {
         syslog(LOG_ERR, "%s - Out of memory.", __func__);
@@ -75,7 +76,7 @@ void get_random_song(char *path)
         goto DONE;
     numberofsongs = mpd_stats_get_number_of_songs(stats);
     mpd_stats_free(stats);
-    skipnum = rand() % numberofsongs;
+    skipnum = (rand() % numberofsongs)/skip_multiplier;
 
     syslog(LOG_DEBUG, "%s: path: %s; number of songs: %i skip: %i\n",
             __func__, path, numberofsongs, skipnum);
@@ -94,17 +95,19 @@ void get_random_song(char *path)
             int whenplayed = db_get_song_played(mpd_get_title(song),
                     mpd_get_artist(song));
             /*
-             * quite sofisticated formula to calculate the probability of song to be playing
+             * quite sofisticated formula to calculate the probability of song 
+             * to be playing
              */
-            int probability = 50 + whenplayed/10 + 
+            int probability = 30 + whenplayed/10 + 
                 db_get_song_rating(mpd_get_title(song), mpd_get_artist(song)) * 10;
 
-            bool Yes = (rand() % 100) < probability;
+            bool Yes = rndprb < probability;
             if (Yes) {
                 str = mpd_song_get_uri(song);
                 memory_write(str, 1, strlen(str), (void *)&rndstr);
                 str = rndstr.memory;
-                syslog(LOG_DEBUG, "%s: probability: %i; when: %d; uri: %s", __func__, probability, whenplayed, str);
+                syslog(LOG_DEBUG, "%s: rnd: %d probability: %i; when: %d; uri: %s", 
+                        __func__, rndprb, probability, whenplayed, str);
                 Done = true;
             }
         }
@@ -116,12 +119,19 @@ DONE:
         if (!mpd_run_add(conn, str)) {
             syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(conn));
         }
+    } else {
+        /*
+         * trying to increase probability when song can't be found
+         */
+        skip_multiplier++;
+        syslog(LOG_DEBUG, "%s: skip_multiplier++ %d", __func__, skip_multiplier);
+        //TODO: there is no need to sleep here
+        sleep(1);
     }
     if(conn != NULL)
         mpd_connection_free(conn);
-
-    rnd_completed = true;
     pthread_mutex_unlock(&rnd_mutex);
+    rnd_completed = true;
 
     return;
 }
@@ -218,14 +228,13 @@ void mpd_poll()
             break;
         case MPD_CONNECTED:
             mpd_put_state();
-            if (mpd.song_pos+QUEUETAIL >= mpd.queue_len)
+            if (mpd.song_pos+QUEUETAIL >= mpd.queue_len &&
+                    rnd_completed)
             {
                 syslog(LOG_DEBUG, "%s: queue is empty %i(%i)\n", __func__, mpd.song_pos, mpd.queue_len);
-                if (rnd_completed) {
-                    int res = pthread_create(&rndthread, NULL, get_random_song, "");
-                    if (res) {
-                        syslog(LOG_ERR, "%s: pthread_create returns %s", __func__, res);
-                    }
+                int res = pthread_create(&rndthread, NULL, get_random_song, "");
+                if (res) {
+                    syslog(LOG_ERR, "%s: pthread_create returns %s", __func__, res);
                 }
             }
             break;

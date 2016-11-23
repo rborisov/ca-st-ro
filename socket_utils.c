@@ -58,7 +58,7 @@ void *handle(void *pnewsock)
     if (n < 0) 
         syslog(LOG_ERR, "%s: ERROR reading from socket", __func__);
     type = get_type_message(buffer, &message);
-    syslog(LOG_DEBUG, "%s: %s >> %d, %s\n", __func__, buffer, type, message);
+//    syslog(LOG_DEBUG, "%s: %s >> %d, %s\n", __func__, buffer, type, message);
     switch (type) {
         case gps_speed:
             ui_show_speed(message);

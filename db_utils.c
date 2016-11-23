@@ -10,7 +10,10 @@
 
 sqlite3 *conn;
 sqlite3_stmt *res;
-char *sqlchar0, *sqlchar1, *sqlchar2, *sqlchar3;
+char *sqlchar0 = NULL, 
+     *sqlchar1 = NULL, 
+     *sqlchar2 = NULL, 
+     *sqlchar3 = NULL;
 
 void convert_str(char *instr)
 {
@@ -144,21 +147,17 @@ int db_get_song_played(char* song, char* artist)
 
     convert_str(song);
     convert_str(artist);
-    sqlite3_free(sqlchar3);
+//    if (sqlchar3)
+//        sqlite3_free(sqlchar3);
     
     sqlchar3 = sql_get_text_field(conn, "SELECT played FROM Songs WHERE "
             "song = '%s' AND artist = '%s'", song, artist);
     if (sqlchar3) { 
-//        syslog(LOG_DEBUG, "%d-%d-%d %d:%d:%d ---> %s", tminfo->tm_year, tminfo->tm_mon, tminfo->tm_mday,
-//                tminfo->tm_hour, tminfo->tm_min, tminfo->tm_sec, sqlchar3);
         if ( strptime(sqlchar3, "%Y-%m-%d %H:%M:%S", &tmsong) != NULL ) {
-//            syslog(LOG_DEBUG, "<<%d %d\n", tmsong.tm_year, tmsong.tm_yday);
             res = (tminfo->tm_year - tmsong.tm_year) * 365 + 
                 tminfo->tm_yday - tmsong.tm_yday;
         }
     }
-
-//    syslog(LOG_DEBUG, "==%d", res);
     
     return res;
 }
@@ -393,5 +392,6 @@ void db_close()
     sqlite3_free(sqlchar0);
     sqlite3_free(sqlchar1);
     sqlite3_free(sqlchar2);
+    sqlite3_free(sqlchar3);
     sqlite3_close(conn);
 }
