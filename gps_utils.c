@@ -11,7 +11,7 @@
 #include "gtk_utils.h"
 
 pthread_t gps_thread;
-#define _WAIT_GPS_ 30
+#define _WAIT_GPS_ 10
 #define _MIN_MOVE_ 1
 
 static void fix(struct gps_data_t *gpsdata)
@@ -73,6 +73,8 @@ void gpsthread(void)
         
         sleep(_WAIT_GPS_);
     }
+
+    syslog(LOG_INFO, "%s: gps_open passed: %s", __func__, gps_errstr(rc));
 
     while (1) {
         gps_stream(&gps_data, WATCH_ENABLE | WATCH_JSON, NULL);
