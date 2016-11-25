@@ -17,7 +17,7 @@ pthread_t main_thread;
 
 enum message_type
 {
-    gps_speed,
+//    gps_speed,
     notification_new_file,
     notification_deleted_file,
     notification_mnt_point,
@@ -37,7 +37,7 @@ enum message_type get_type_message(const char *buffer, char **message)
             *end = 0;
             if (strcmp(start+1, "newfile") == 0) type = notification_new_file;
             else if (strcmp(start+1, "mntpoint") == 0) type = notification_mnt_point;
-            else if (strcmp(start+1, "speed") == 0) type = gps_speed;
+//            else if (strcmp(start+1, "speed") == 0) type = gps_speed;
             *message = end+1;
             *end = ']';
             break;
@@ -60,9 +60,9 @@ void *handle(void *pnewsock)
     type = get_type_message(buffer, &message);
 //    syslog(LOG_DEBUG, "%s: %s >> %d, %s\n", __func__, buffer, type, message);
     switch (type) {
-        case gps_speed:
+/*        case gps_speed:
             ui_show_speed(message);
-            break;
+            break;*/
         case notification_new_file:
             sprintf(buffer, "new: %s", message);
             ui_show_notification(buffer);

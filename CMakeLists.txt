@@ -12,6 +12,7 @@ find_package(LibMPDClient REQUIRED)
 find_package(GTK2 REQUIRED gtk)
 find_package(Sqlite3 REQUIRED)
 find_package(CURL REQUIRED)
+find_package(GPSD REQUIRED)
 
 include_directories(${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/external
     ${GTK2_INCLUDE_DIRS} ${LIBMPDCLIENT_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIRS}
@@ -38,11 +39,12 @@ set(SOURCES
     socket_utils.c 
     external/json.c
     web_utils.c
+    gps_utils.c
 )
 
 add_executable(player ${SOURCES})
 target_link_libraries(player ${CMAKE_THREAD_LIBS_INIT} ${GTK2_LIBRARIES} 
     ${LIBMPDCLIENT_LIBRARIES} ${SQLITE3_LIBRARIES} -lm
-    ${CURL_LIBRARIES})
+    ${CURL_LIBRARIES} ${GPSD_LIBRARY})
 
 install(TARGETS player DESTINATION bin)

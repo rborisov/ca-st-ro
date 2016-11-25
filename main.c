@@ -18,6 +18,7 @@
 #include "db_utils.h"
 #include "gtk_utils.h"
 #include "socket_utils.h"
+#include "gps_utils.h"
 
 void sigsegv_handler(int sig) {
     void *array[10];
@@ -52,8 +53,7 @@ static void player_idle(gpointer data)
 
 int main (int argc, char *argv[])
 {
-    gchar *path;
-    guint hndl_id0, hndl_id1, hndl_id2;
+    guint hndl_id0, hndl_id1;
     //    char *lang;
     int opt;
     int longopt_index;
@@ -95,6 +95,7 @@ int main (int argc, char *argv[])
     utils_init();
     db_init();
     srv_init();
+    gpsutils_init();
 
     gdk_threads_enter ();
     hndl_id0 = g_idle_add((GtkFunction)mpd_idle, NULL);
