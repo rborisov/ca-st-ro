@@ -16,16 +16,16 @@ pthread_t gps_thread;
 
 static void fix(struct gps_data_t *gpsdata)
 {
-    double move;
+/*    double move;
     static double moved = 0;
     static double time_saved = 0;
     static double lat_saved = 0, lon_saved = 0;
-    static bool first = true;
+    static bool first = true;*/
     int speedkph;
     char speedstr[4] = "\0";
-    char movedstr[6] = "\0";
+//    char movedstr[6] = "\0";
     static int speed_saved = 0;
-
+/*
     if ((gpsdata->fix.time == time_saved) || gpsdata->fix.mode < MODE_2D)
         return;
 
@@ -48,16 +48,14 @@ static void fix(struct gps_data_t *gpsdata)
     lat_saved = gpsdata->fix.latitude;
     lon_saved = gpsdata->fix.longitude;
     time_saved = gpsdata->fix.time;
-
+*/
     speedkph = round(gpsdata->fix.speed*3.6);
 
     if ((speedkph >= 0) &&
             (speedkph < 300) &&
             (speedkph != speed_saved)) {
         sprintf(speedstr, "%d", speedkph);
-        
         ui_show_speed(speedstr);
-        
         speed_saved = speedkph;
     }
 }

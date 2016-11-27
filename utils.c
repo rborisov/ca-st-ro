@@ -54,6 +54,7 @@ void get_random_song(char *path)
     int listened0 = 65000,
         skipnum, numberofsongs = 0;
     bool Done = false;
+    bool First = true;
     char *str = NULL;
     int rndprb = (rand() % 100);
 
@@ -92,6 +93,14 @@ void get_random_song(char *path)
             if ((skipnum-- > 0) || Done)
                 continue;
             const struct mpd_song *song = mpd_entity_get_song(entity);
+
+            if (First) {
+                str = mpd_song_get_uri(song);
+                memory_write(str, 1, strlen(str), (void *)&rndstr);
+                str = rndstr.memory;
+                First = false;
+            }
+
             int whenplayed = db_get_song_played(mpd_get_title(song),
                     mpd_get_artist(song));
             /*
@@ -113,21 +122,13 @@ void get_random_song(char *path)
         }
         mpd_entity_free(entity);
     }
-DONE:
-    if (Done) {
+    if (str != NULL && conn != NULL) {
         syslog(LOG_DEBUG, "%s: add to queue: %s", __func__, str);
         if (!mpd_run_add(conn, str)) {
             syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(conn));
         }
-    } else {
-        /*
-         * trying to increase probability when song can't be found
-         */
-        skip_multiplier++;
-        syslog(LOG_DEBUG, "%s: skip_multiplier++ %d", __func__, skip_multiplier);
-        //TODO: there is no need to sleep here
-        sleep(1);
     }
+DONE:
     if(conn != NULL)
         mpd_connection_free(conn);
     pthread_mutex_unlock(&rnd_mutex);
@@ -234,7 +235,7 @@ void mpd_poll()
                 syslog(LOG_DEBUG, "%s: queue is empty %i(%i)\n", __func__, mpd.song_pos, mpd.queue_len);
                 int res = pthread_create(&rndthread, NULL, get_random_song, "");
                 if (res) {
-                    syslog(LOG_ERR, "%s: pthread_create returns %s", __func__, res);
+                    syslog(LOG_ERR, "%s: pthread_create returns %d", __func__, res);
                 }
             }
             break;

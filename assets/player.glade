@@ -148,14 +148,14 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="lab_gps_speed_units">
-                    <property name="width_request">84</property>
+                  <object class="GtkLabel" id="lbl_gps_speed">
+                    <property name="width_request">248</property>
                     <property name="height_request">160</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xalign">0</property>
                     <property name="yalign">0</property>
-                    <property name="label" translatable="yes">0</property>
+                    <property name="label" translatable="yes">000</property>
                     <property name="justify">fill</property>
                     <property name="track_visited_links">False</property>
                     <attributes>
@@ -169,59 +169,6 @@
                     </attributes>
                   </object>
                   <packing>
-                    <property name="x">154</property>
-                    <property name="y">20</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="lab_gps_speed_tens">
-                    <property name="width_request">84</property>
-                    <property name="height_request">160</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="xalign">0</property>
-                    <property name="yalign">0</property>
-                    <property name="label" translatable="yes">0</property>
-                    <property name="justify">fill</property>
-                    <property name="track_visited_links">False</property>
-                    <attributes>
-                      <attribute name="style" value="normal"/>
-                      <attribute name="weight" value="ultraheavy"/>
-                      <attribute name="variant" value="normal"/>
-                      <attribute name="stretch" value="ultra-expanded"/>
-                      <attribute name="foreground" value="#ea216ce619a0"/>
-                      <attribute name="background" value="#000000000000"/>
-                      <attribute name="scale" value="10"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="x">70</property>
-                    <property name="y">20</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="lab_gps_speed_hundreds">
-                    <property name="width_request">60</property>
-                    <property name="height_request">110</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="xalign">0</property>
-                    <property name="yalign">0</property>
-                    <property name="label" translatable="yes">0</property>
-                    <property name="justify">fill</property>
-                    <property name="track_visited_links">False</property>
-                    <attributes>
-                      <attribute name="style" value="normal"/>
-                      <attribute name="weight" value="ultraheavy"/>
-                      <attribute name="variant" value="normal"/>
-                      <attribute name="stretch" value="ultra-expanded"/>
-                      <attribute name="foreground" value="#ea216ce619a0"/>
-                      <attribute name="background" value="#000000000000"/>
-                      <attribute name="scale" value="7"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="x">10</property>
                     <property name="y">20</property>
                   </packing>
                 </child>

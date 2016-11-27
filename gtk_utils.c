@@ -21,6 +21,11 @@ pthread_t notification_thread;
 
 void ui_show_speed(gchar *message)
 {
+#if 1
+    GtkWidget *label = NULL;
+    label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_gps_speed"));
+    gtk_label_set_text (GTK_LABEL (label), message);
+#else
     char a[2] = {0,0};
     GtkWidget *label[3];
     int len = strlen(message);
@@ -48,6 +53,7 @@ void ui_show_speed(gchar *message)
         default:
             syslog(LOG_ERR, "%s: speed %s, length %d", __func__, message, len);
     }
+#endif
 }
 
 void show_notification_after(gchar *message)
