@@ -34,16 +34,15 @@ void rm_current_songfile()
     char *songuri = NULL;
     char filepath[255];
     song = mpd_run_current_song(mpd.conn);
-    if (song == NULL) {
-        syslog(LOG_DEBUG, "%s: no current song", __func__);
-        return;
+    if (song != NULL) {
+        songuri = mpd_song_get_uri(song);
+        sprintf(filepath, "%s/%s", MUSICPATH, songuri);
+        syslog(LOG_DEBUG, "%s: lets delete %s forever", __func__, filepath);
+        if (unlink(filepath) != 0)
+            syslog(LOG_DEBUG, "%s: cant", __func__);
+        mpd_song_free(song);
     }
-    songuri = mpd_song_get_uri(song);
-    sprintf(filepath, "%s/%s", MUSICPATH, songuri);
-    syslog(LOG_DEBUG, "%s: lets delete %s forever", __func__, filepath);
-    if (unlink(filepath) != 0)
-        syslog(LOG_DEBUG, "%s: cant", __func__);
-    mpd_song_free(song);
+    mpd_response_finish(mpd.conn);
 
     return;
 }
@@ -60,7 +59,7 @@ void get_random_song(char *path)
 
     rnd_completed = false;
 
-    pthread_mutex_lock(&rnd_mutex);
+//    pthread_mutex_lock(&rnd_mutex);
     struct mpd_connection *conn = mpd_connection_new(NULL, NULL, 3000);
     if (conn == NULL) {
         syslog(LOG_ERR, "%s - Out of memory.", __func__);
@@ -129,9 +128,10 @@ void get_random_song(char *path)
         }
     }
 DONE:
+    mpd_response_finish(conn);
     if(conn != NULL)
         mpd_connection_free(conn);
-    pthread_mutex_unlock(&rnd_mutex);
+//    pthread_mutex_unlock(&rnd_mutex);
     rnd_completed = true;
 
     return;
@@ -143,23 +143,23 @@ char* get_current_album()
     char *str = NULL;
     if (mpd.conn_state == MPD_CONNECTED) {
         song = mpd_run_current_song(mpd.conn);
-        if(song == NULL) {
-            printf("song == NULL\n");
-            return NULL;
-        }
-        str = (char *)mpd_song_get_tag(song, MPD_TAG_ALBUM, 0);
-        if (str == NULL) {
-            str = db_get_song_album(mpd_song_get_tag(song, MPD_TAG_TITLE, 0),
-                    mpd_song_get_tag(song, MPD_TAG_ARTIST, 0));
-            printf("%s: no MPD_TAG_ALBUM\n", __func__);
-        }
-        if (str) {
-            memory_write(str, 1, strlen(str), (void *)&albumstr);
-            str = albumstr.memory;
-            printf("%s: %s\n", __func__, albumstr.memory);
+        if(song != NULL) {
+            str = (char *)mpd_song_get_tag(song, MPD_TAG_ALBUM, 0);
+            if (str == NULL) {
+                str = db_get_song_album(mpd_song_get_tag(song, MPD_TAG_TITLE, 0),
+                        mpd_song_get_tag(song, MPD_TAG_ARTIST, 0));
+                syslog(LOG_DEBUG, "%s: no MPD_TAG_ALBUM\n", __func__);
+            }
+            if (str) {
+                memory_write(str, 1, strlen(str), (void *)&albumstr);
+                str = albumstr.memory;
+                syslog(LOG_DEBUG, "%s: %s\n", __func__, albumstr.memory);
+            }
+
+            mpd_song_free(song);
         }
 
-        mpd_song_free(song);
+        mpd_response_finish(mpd.conn);
     }
 
     return str;
@@ -167,16 +167,15 @@ char* get_current_album()
 
 int mpd_db_get_current_song_rating()
 {
-    int rating;
+    int rating = 0;
     struct mpd_song *song;
 
     song = mpd_run_current_song(mpd.conn);
-    if(song == NULL)
-        return 0;
-
-    rating = db_get_song_rating(mpd_get_title(song), mpd_get_artist(song));
-
-    mpd_song_free(song);
+    if(song != NULL) {
+        rating = db_get_song_rating(mpd_get_title(song), mpd_get_artist(song));
+        mpd_song_free(song);
+    }
+    mpd_response_finish(mpd.conn);
     return rating;
 }
 
@@ -186,13 +185,12 @@ int mpd_db_update_current_song_rating(int increase)
     struct mpd_song *song;
 
     song = mpd_run_current_song(mpd.conn);
-    if(song == NULL)
-        return 0;
-
-    rating = db_update_song_rating(mpd_get_title(song),
-            mpd_song_get_tag(song, MPD_TAG_ARTIST, 0), increase);
-
-    mpd_song_free(song);
+    if(song != NULL) {
+        rating = db_update_song_rating(mpd_get_title(song),
+                mpd_song_get_tag(song, MPD_TAG_ARTIST, 0), increase);
+        mpd_song_free(song);
+    }
+    mpd_response_finish(mpd.conn);
 
     return rating;
 }

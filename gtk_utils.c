@@ -18,13 +18,21 @@
 
 GtkBuilder  *xml = NULL;
 pthread_t notification_thread;
+GMutex mutex_interface;
+
+static void gtk_setlabel(char* lbl, char* str);
+static void gtk_setlabel_int(char* lbl, int val)
+{
+    gchar *str;
+    str = g_strdup_printf ("%d", val);
+    gtk_setlabel(lbl, str);
+    g_free(str);
+}
 
 void ui_show_speed(gchar *message)
 {
 #if 1
-    GtkWidget *label = NULL;
-    label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_gps_speed"));
-    gtk_label_set_text (GTK_LABEL (label), message);
+    gtk_setlabel("lbl_gps_speed", message);
 #else
     char a[2] = {0,0};
     GtkWidget *label[3];
@@ -56,51 +64,25 @@ void ui_show_speed(gchar *message)
 #endif
 }
 
-void show_notification_after(gchar *message)
+static void show_notification_after(gchar *message)
 {
-    GtkWidget *label = NULL;
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-    label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_notify"));
     sleep(5);
-    gtk_label_set_text (GTK_LABEL (label), message);
+    gtk_setlabel("lbl_notify", message);
 }
 
 void ui_show_notification(gchar *message)
 {
-    GtkWidget *label = NULL;
     pthread_cancel(notification_thread);
-    label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_notify"));
-    gtk_label_set_text (GTK_LABEL (label), message);
+    gtk_setlabel("lbl_notify", message);
     pthread_create(&notification_thread, NULL, show_notification_after, "\0");
-}
-
-static void ui_song_rating_update(int rating)
-{
-    GtkWidget *label = NULL;
-    gchar *str;
-    label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_rating"));
-    str = g_strdup_printf ("%d", rating);
-    gtk_label_set (GTK_LABEL (label), str);
-    g_free(str);
-}
-
-static void ui_song_np_update(int np)
-{
-    GtkWidget *label = NULL;
-    gchar *str;
-    label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_np"));
-    str = g_strdup_printf ("%d", np);
-    gtk_label_set (GTK_LABEL (label), str);
-    g_free(str);
 }
 
 static void ui_queue_update(int songpos, int queue_length)
 {
-    GtkWidget *label = NULL;
     gchar *str;
-    label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_queue_length"));
     str = g_strdup_printf ("%d(%d)", songpos, queue_length);
-    gtk_label_set (GTK_LABEL (label), str);
+    gtk_setlabel("lbl_queue_length", str);
     g_free(str);
 }
 
@@ -166,7 +148,7 @@ static void cb_like_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
     int rat = mpd_db_update_current_song_rating(5);
     sprintf(rating, "%d", rat);
     ui_show_notification(rating);
-    ui_song_rating_update(rat);
+    gtk_setlabel_int("lbl_rating", rat);
 
     return;
 }
@@ -334,17 +316,18 @@ cleanup:
     return;
 }
 
-gtk_setlabel(char* lbl, char* str)
+void gtk_setlabel(char* lbl, char* str)
 {
+    g_mutex_lock(&mutex_interface);
     GtkWidget *label = NULL;
     label = GTK_WIDGET(gtk_builder_get_object (xml, lbl));
-    gtk_label_set(GTK_LABEL(label), "");
+    gtk_label_set(GTK_LABEL(label), str);
+    g_mutex_unlock(&mutex_interface);
 }
 
 void gtk_poll(void)
 {
-    GtkWidget *label = NULL, *label1 = NULL, *label2 = NULL, *label3 = NULL,
-              *label4 = NULL, *image0;
+    GtkWidget *image0;
     gchar *title = NULL, *artist = NULL, *album = NULL;
     gchar time[11] = "00:00/00:00";
     int minutes_elapsed, minutes_total;
@@ -417,14 +400,12 @@ void gtk_poll(void)
         title = mpd_get_current_title();
         if (title) {
             syslog(LOG_INFO, "%s: %s %d %d\n", __func__, title, mpd.song_id, gtk.song_id);
-            label = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_track"));
-            gtk_label_set (GTK_LABEL (label), title);
+            gtk_setlabel("lbl_track", title);
         }
         artist = mpd_get_current_artist();
         if (artist) {
             syslog(LOG_INFO, "%s: %s", __func__, artist);
-            label1 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_artist"));
-            gtk_label_set (GTK_LABEL (label1), artist);
+            gtk_setlabel("lbl_artist", artist);
 #if 0
             artist_art = db_get_artist_art(artist);
 #endif
@@ -432,12 +413,11 @@ void gtk_poll(void)
             album = get_current_album();
             if (album) {
                 syslog(LOG_INFO, "%s: %s\n", __func__, album);
-                label2 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_album"));
-                gtk_label_set (GTK_LABEL (label2), album);
+                gtk_setlabel("lbl_album", album);
                 album_art = db_get_album_art(artist, album);
             } else {
                 //TODO: start download thread
-                gtk_label_set (GTK_LABEL (label2), "");
+                gtk_setlabel("lbl_album", "");
             }
             /*
              *          * artist art
@@ -470,8 +450,8 @@ void gtk_poll(void)
             syslog(LOG_INFO, "%s: np %d; rt %d; db %d>%d", __func__, np, rating, 
                     daysbefore, db_get_song_played(title, artist));
 
-            ui_song_np_update(np);
-            ui_song_rating_update(rating);
+            gtk_setlabel_int("lbl_np", np);
+            gtk_setlabel_int("lbl_rating", rating);
         }
 
         gtk.song_id = mpd.song_id;
@@ -482,16 +462,11 @@ void gtk_poll(void)
      * */
     str = g_strdup_printf ("%02i:%02i/%02i:%02i", mpd.elapsed_time / 60, mpd.elapsed_time % 60,
             mpd.total_time / 60, mpd.total_time % 60);
-    label3 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_time"));
-    gtk_label_set (GTK_LABEL (label3), str);
+    gtk_setlabel("lbl_time", str);
     g_free(str);
 
     /*
      * volume
      * */
-    label4 = GTK_WIDGET (gtk_builder_get_object (xml, "lbl_volume"));
-    str = g_strdup_printf ("%d", mpd.volume);
-    gtk_label_set (GTK_LABEL (label4), str);
-    g_free(str);
-
+    gtk_setlabel_int("lbl_volume", mpd.volume);    
 }

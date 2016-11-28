@@ -104,6 +104,8 @@ char* mpd_get_current_title()
         mpd_song_free(song);
     }
 
+    mpd_response_finish(mpd.conn);
+
     return titlebuf;
 }
 
@@ -121,6 +123,8 @@ char* mpd_get_current_artist()
         mpd_song_free(song);
     }
 
+    mpd_response_finish(mpd.conn);
+
     return artistbuf;
 }
 
@@ -137,6 +141,8 @@ char* mpd_get_current_album()
         sprintf(albumbuf, "%s", mpd_get_album(song));
         mpd_song_free(song);
     }
+
+    mpd_response_finish(mpd.conn);
 
     return albumbuf;
 }
@@ -180,11 +186,13 @@ char* mpd_get_title(struct mpd_song const *song)
 
 unsigned mpd_get_queue_length()
 {
+    unsigned length = 0;
     struct mpd_status *status = mpd_run_status(mpd.conn);
-    if (status == NULL)
-        return 0;
-    const unsigned length = mpd_status_get_queue_length(status);
-    mpd_status_free(status);
+    if (status != NULL) {
+        length = mpd_status_get_queue_length(status);
+        mpd_status_free(status);
+    }
+    mpd_response_finish(mpd.conn);
     return length;
 }
 
@@ -382,6 +390,7 @@ void mpd_put_state(void)
     //    printf("%d\n", mpd.song_id);
 
     mpd_status_free(status);
+    mpd_response_finish(mpd.conn);
 ERROR:
     return;
 }

@@ -24,7 +24,7 @@ static void fix(struct gps_data_t *gpsdata)
     int speedkph;
     char speedstr[4] = "\0";
 //    char movedstr[6] = "\0";
-    static int speed_saved = 0;
+    static int speed_saved = -1;
 /*
     if ((gpsdata->fix.time == time_saved) || gpsdata->fix.mode < MODE_2D)
         return;
@@ -49,14 +49,18 @@ static void fix(struct gps_data_t *gpsdata)
     lon_saved = gpsdata->fix.longitude;
     time_saved = gpsdata->fix.time;
 */
-    speedkph = round(gpsdata->fix.speed*3.6);
 
-    if ((speedkph >= 0) &&
-            (speedkph < 300) &&
-            (speedkph != speed_saved)) {
-        sprintf(speedstr, "%d", speedkph);
-        ui_show_speed(speedstr);
-        speed_saved = speedkph;
+    if (gpsdata) {
+        syslog(LOG_DEBUG, "speed: %d", gpsdata->fix.speed);
+        speedkph = round(gpsdata->fix.speed*3.6);
+
+        if ((speedkph >= 0) &&
+                (speedkph < 300) &&
+                (speedkph != speed_saved)) {
+            sprintf(speedstr, "%d", speedkph);
+            ui_show_speed(speedstr);
+            speed_saved = speedkph;
+        }
     }
 }
 
@@ -72,7 +76,7 @@ void gpsthread(void)
         sleep(_WAIT_GPS_);
     }
 
-    syslog(LOG_INFO, "%s: gps_open passed: %s", __func__, gps_errstr(rc));
+    syslog(LOG_INFO, "%s: gps_open passed", __func__);
 
     while (1) {
         gps_stream(&gps_data, WATCH_ENABLE | WATCH_JSON, NULL);
@@ -81,10 +85,9 @@ void gpsthread(void)
         syslog(LOG_ERR, "%s: timeout reached", __func__);
         
         gps_stream(&gps_data, WATCH_DISABLE, NULL);
-        gps_close(&gps_data);
-        
         sleep(_WAIT_GPS_);
     }
+    gps_close(&gps_data);
 }
 
 int gpsutils_init()
