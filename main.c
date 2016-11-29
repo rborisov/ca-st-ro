@@ -110,7 +110,7 @@ int main (int argc, char *argv[])
     db_close();
     utils_close();
 cleanup:
-
+//TODO: clean
 
     return 0;
 }
