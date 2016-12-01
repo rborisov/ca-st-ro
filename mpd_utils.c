@@ -11,21 +11,44 @@ char nullstr[1] = "";
 char titlebuf[128] = "";
 char artistbuf[128] = "";
 char albumbuf[128] = "";
-/*
-   char* mpd_get_config_music_directory()
-   {
-   char *music_directory = NULL;
-   if (mpd_send_command(mpd.conn, "config", NULL))
-   {
-   struct mpd_pair *pair = mpd_recv_pair_named(mpd.conn, "music_directory");
-   if (pair != NULL) {
-   music_directory = strdup(pair->value);
-   mpd_return_pair(conn, pair);
-   }
-   }
-   return music_directory;
-   }
-   */
+
+bool mpd_is_in_queue(const char *uri)
+{
+    bool res = false;
+    struct mpd_entity *entity;
+    struct mpd_connection *conn = mpd_connection_new(NULL, NULL, 3000);
+
+    if (conn == NULL) {
+        syslog(LOG_ERR, "%s - Out of memory.", __func__);
+        goto DONE;
+    }
+    if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS) {
+        syslog(LOG_ERR, "%s - MPD connection: %s\n", __func__,
+                mpd_connection_get_error_message(conn));
+        goto DONE;
+    }
+    if (!mpd_send_list_queue_meta(conn)) {
+        syslog(LOG_ERR, "%s: %s", __func__, mpd_connection_get_error_message(conn));
+        mpd_connection_clear_error(conn);
+        goto DONE;
+    }
+    while((entity = mpd_recv_entity(conn)) != NULL) {
+        const struct mpd_song *song;
+        if(mpd_entity_get_type(entity) == MPD_ENTITY_TYPE_SONG && !res) {
+            song = mpd_entity_get_song(entity);
+            if (strcmp(mpd_song_get_uri(song), uri) == 0) {
+                syslog(LOG_INFO, "%s: %s is already in the queue", __func__, uri);
+                res = true;
+            }
+        }
+        mpd_entity_free(entity);
+    }
+
+DONE:
+    if(conn != NULL)
+        mpd_connection_free(conn);
+    return res;
+}
 
 int mpd_crop()
 {
@@ -220,119 +243,7 @@ int mpd_insert (char *song_path )
 ERROR:
     return res;
 }
-#if 0
-void get_random_song(struct mpd_connection *conn, char *str, char *path)
-{
-    struct mpd_entity *entity;
-    int listened0 = 65000,
-        skipnum, numberofsongs = 0;
 
-    struct mpd_stats *stats = mpd_run_stats(conn);
-    if (stats == NULL)
-        return;
-    numberofsongs = mpd_stats_get_number_of_songs(stats);
-    mpd_stats_free(stats);
-    skipnum = rand() % numberofsongs;
-
-    syslog(LOG_DEBUG, "%s: path %s; number of songs: %i skip: %i\n",
-            __func__, path, numberofsongs, skipnum);
-    if (!mpd_send_list_all_meta(conn, ""))//path))
-    {
-        syslog(LOG_ERR, "%s: error: mpd_send_list_meta %s\n", __func__, path);
-        return;
-    }
-
-    while((entity = mpd_recv_entity(conn)) != NULL)
-    {
-        const struct mpd_song *song;
-        if (mpd_entity_get_type(entity) == MPD_ENTITY_TYPE_SONG)
-        {
-            if (skipnum-- > 0)
-                continue;
-
-            int listened;
-            song = mpd_entity_get_song(entity);
-            listened = db_get_song_numplayed(mpd_get_title(song),
-                    mpd_get_artist(song));
-            if (listened < listened0) {
-                listened0 = listened;
-                syslog(LOG_DEBUG, "listened: %i ", listened);
-                int probability = 50 +
-                    db_get_song_rating(mpd_get_title(song),
-                            mpd_get_artist(song));
-                syslog(LOG_DEBUG, "probability: %i ", probability);
-                bool Yes = (rand() % 100) < probability;
-                if (Yes) {
-                    sprintf(str, "%s", mpd_song_get_uri(song));
-                    syslog(LOG_DEBUG, "uri: %s ", str);
-                    syslog(LOG_DEBUG, "title: %s ", mpd_get_title(song));
-                    syslog(LOG_DEBUG, "artist: %s", mpd_get_artist(song));
-                }
-            }
-        }
-        mpd_entity_free(entity);
-    }
-}
-
-void get_song_to_delete(char *str)
-{
-    struct mpd_entity *entity;
-    int rating0 = 65000;
-    if (!mpd_send_list_meta(mpd.conn, "/")) {
-        syslog(LOG_DEBUG, "error: mpd_send_list_meta\n");
-        return;
-    }
-    while((entity = mpd_recv_entity(mpd.conn)) != NULL) {
-        if (mpd_entity_get_type(entity) == MPD_ENTITY_TYPE_SONG) {
-            const struct mpd_song *song = mpd_entity_get_song(entity);
-            int rating = db_get_song_rating(mpd_get_title(song),
-                    mpd_get_artist(song));
-            if (rating < rating0) {
-                rating0 = rating;
-                sprintf(str, "%s", mpd_song_get_uri(song));
-            }
-        }
-        mpd_entity_free(entity);
-    }
-}
-
-int get_current_song_rating()
-{
-    int rating;
-    struct mpd_song *song;
-
-    song = mpd_run_current_song(mpd.conn);
-    if(song == NULL)
-        return 0;
-
-    rating = db_get_song_rating(mpd_get_title(song), mpd_get_artist(song));
-
-    mpd_song_free(song);
-    return rating;
-}
-
-int mpd_delete_current_song(struct mpd_connection *conn)
-{
-    struct mpd_song *song;
-    char *currentsonguri = NULL;
-
-    song = mpd_run_current_song(conn);
-    if(song == NULL)
-        return 0;
-
-    db_update_song_rating(mpd_get_title(song),
-            mpd_song_get_tag(song, MPD_TAG_ARTIST, 0), -5);
-
-    currentsonguri = mpd_song_get_uri(song);
-    printf("%s: let's delete song: %s\n", __func__, currentsonguri);
-
-    delete_file_forever(currentsonguri);
-
-    mpd_song_free(song);
-
-    return 1;
-}
-#endif
 void mpd_toggle_play(void)
 {
     if (mpd.state == MPD_STATE_STOP)
@@ -394,52 +305,3 @@ void mpd_put_state(void)
 ERROR:
     return;
 }
-#if 0
-void mpd_poll()
-{
-    //    printf("%d\n", mpd.conn_state);
-    switch (mpd.conn_state) {
-        case MPD_DISCONNECTED:
-            syslog(LOG_INFO, "%s - MPD Connecting...\n", __func__);
-            mpd.conn = mpd_connection_new(NULL, NULL, 3000);
-            if (mpd.conn == NULL) {
-                syslog(LOG_ERR, "%s - Out of memory.", __func__);
-                mpd.conn_state = MPD_FAILURE;
-                return;
-            }
-            if (mpd_connection_get_error(mpd.conn) != MPD_ERROR_SUCCESS) {
-                syslog(LOG_ERR, "%s - MPD connection: %s\n", __func__,
-                        mpd_connection_get_error_message(mpd.conn));
-                mpd.conn_state = MPD_FAILURE;
-                return;
-            }
-            syslog(LOG_INFO, "%s - MPD connected.\n", __func__);
-            mpd_connection_set_timeout(mpd.conn, 10000);
-            mpd.conn_state = MPD_CONNECTED;
-            break;
-        case MPD_FAILURE:
-        case MPD_DISCONNECT:
-        case MPD_RECONNECT:
-            syslog(LOG_ERR, "%s - MPD (dis)reconnect or failure\n", __func__);
-            if(mpd.conn != NULL)
-                mpd_connection_free(mpd.conn);
-            mpd.conn = NULL;
-            mpd.conn_state = MPD_DISCONNECTED;
-            break;
-        case MPD_CONNECTED:
-            mpd_put_state();
-            //TODO: display status
-            /*            if (queue_is_empty) {
-                          queue_is_empty = 0;
-                          get_random_song(mpd.conn, str, rcm.file_path);
-                          if (strcmp(str, "") != 0) {
-                          syslog(LOG_DEBUG, "%s: add random song %s\n", __func__, str);
-                          mpd_run_add(mpd.conn, str);
-                          }
-                          }*/
-            break;
-        default:
-            syslog(LOG_INFO, "%s - mpd.conn_state %i\n", __func__, mpd.conn_state);
-    }
-}
-#endif

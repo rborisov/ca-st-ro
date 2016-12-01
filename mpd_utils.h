@@ -56,4 +56,6 @@ char *mpd_get_current_title(void);
 char *mpd_get_current_artist(void);
 char *mpd_get_current_album(void);
 
+bool mpd_is_in_queue(const char *uri);
+
 #endif

@@ -106,17 +106,19 @@ void get_random_song(char *path)
              * quite sofisticated formula to calculate the probability of song 
              * to be playing
              */
+            int np = db_get_song_numplayed(mpd_get_title(song), mpd_get_artist(song));
             int probability = 30 + whenplayed/10 + 
                 db_get_song_rating(mpd_get_title(song), mpd_get_artist(song)) * 10;
 
-            bool Yes = rndprb < probability;
-            if (Yes) {
+            if ((np == 0) || (rndprb < probability)) {
                 str = mpd_song_get_uri(song);
-                memory_write(str, 1, strlen(str), (void *)&rndstr);
-                str = rndstr.memory;
-                syslog(LOG_DEBUG, "%s: rnd: %d probability: %i; when: %d; uri: %s", 
-                        __func__, rndprb, probability, whenplayed, str);
-                Done = true;
+                if (!mpd_is_in_queue(str)) {
+                    memory_write(str, 1, strlen(str), (void *)&rndstr);
+                    str = rndstr.memory;
+                    syslog(LOG_DEBUG, "%s: rnd: %d np: %d probability: %i; when: %d; uri: %s", 
+                            __func__, rndprb, np, probability, whenplayed, str);
+                    Done = true;
+                }
             }
         }
         mpd_entity_free(entity);
